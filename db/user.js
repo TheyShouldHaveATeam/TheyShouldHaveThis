@@ -84,7 +84,7 @@ function isValidCredentials(username, email, password) {
 }
 
 function createUser(db, username, email, password, callback) {
-    doesUserExist(db, username, function(userExists) {
+    doesUserExist(db, email, function(userExists) {
         if (userExists) {
             callback({
                 "success": false,
@@ -205,9 +205,8 @@ function getUser(db, userId, callback) {
     });
 }
 
-function doesUserExist(db, username, callback) {
-    // TODO both username AND email should be checked for duplicates
-    db.collection('users').findOne({ "username": username }, function(err, result) {
+function doesUserExist(db, email, callback) {
+    db.collection('users').findOne({ "email": email }, function(err, result) {
         if(err) {
             callback(err);
         }
@@ -221,27 +220,24 @@ function doesUserExist(db, username, callback) {
     });
 }
 
-function authenticateUser(db, username, password, callback) {
-    bcrypt.genSalt(10, function(err, salt) {
-        bcrypt.hash(password, salt, null, function(err, hash) {
-            db.collection('users').find({ "username": username, "password": hash }, function(err, result) {
-                if(err) {
-                    callback(err);
-                }
+function authenticateUser(db, email, password, callback) {
+    db.collection('users').findOne({ "email": email }, function(err, result) {
+        if(err) {
+            callback(err);
+            return;
+        }
 
-                if(result) {
-                    result.success = true;
-                    callback(result);
-                } else {
-                    callback({
-                        "success": false,
-                        "error": "A use with this username/password does not exist.",
-                        "errorType": "authentication"
-                    });
-                }
-
+        if(bcrypt.compareSync(password, result.password)) {
+            result.success = true;
+            callback(result);
+        }
+        else {
+            callback({
+                "success": false,
+                "error": "A use with this email/password does not exist.",
+                "errorType": "authentication"
             });
-        });
+        }
     });
 }
 
@@ -383,6 +379,5 @@ module.exports = {
     incrementPostDownvotes: incrementPostDownvotes,
     decrementPostDownvotes: decrementPostDownvotes,
     incrementCommentDownvotes: incrementCommentDownvotes,
-    decrementCommentDownvotes: decrementCommentDownvotes,
-    isValidPassword: isValidPassword
+    decrementCommentDownvotes: decrementCommentDownvotes
 };

@@ -123,11 +123,33 @@ MongoClient.connect((process.env.MONGODB_CONNECT
     });
 
     app.post('/users/login', function(req, res) {
-
+        dbUser.doesUserExist(db, req.body.email, function(userExists) {
+            if(!userExists) {
+                res.send(404);
+            }
+            else {
+                dbUser.authenticateUser(db, req.body.email, req.body.password, function(response) {
+                    if(response.success) {
+                        req.session.currentUser = response._id;
+                        res.send({
+                            id: response._id,
+                            email: response.email,
+                            username: response.username,
+                            votes: response.votes,
+                            createdOn: response.createdOn
+                        }, 200);
+                    }
+                    else {
+                        res.send(response, 401);
+                    }
+                });
+            }
+        });
     });
 
     app.post('/users/logout', function(req, res) {
-
+        req.session.userId = null;
+        res.send(204);
     });
 
     app.get('/admin', function(req, res) {
