@@ -1,4 +1,4 @@
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcrypt-nodejs');
 
 // function isValidCredentials(username, email, password) {
 //     var isValidPassword = isValidPassword(password);
