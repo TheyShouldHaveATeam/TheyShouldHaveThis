@@ -309,10 +309,6 @@ function decrementCommentUpvotes(db, userId, callback) {
     });
 }
 
-
-
-
-
 function incrementPostDownvotes(db, userId, callback) {
     db.collection('users').update({ "_id": userId }, { "$inc": { "votes.$.postDownvotes": 1 } }, function(err, result) {
         if(err) {

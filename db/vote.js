@@ -1,3 +1,7 @@
+var dbUser = require(__dirname + '/user.js');
+var dbPost = require(__dirname + '/post.js');
+var dbComment = require(__dirname + '/comment.js');
+
 function voteOnPost(db, userId, postId, typeOfVote, callback) {
     db.collection('postVotes').find({ "postId": postId, "userId": userId }, function(err, result) {
         if(err) {
@@ -22,12 +26,46 @@ function voteOnPost(db, userId, postId, typeOfVote, callback) {
                         return;
                     }
 
-                    removed.success = true;
-                    callback({ "success": true });
+                    //need to decrement the typeOfVote
+                    if(typeOfVote === "upvote") {
+                        dbPost.decrementPostUpvotes(db, postId, function(result) {
+                            if(result.success === false) {
+                                callback(result);
+                                return;
+                            }
+
+                            dbUser.decrementPostUpvotes(db, result.userId, function(result) {
+                                if(result.success === false) {
+                                    callback(result);
+                                    return;
+                                }
+
+                                callback({ "success": true });
+                            });
+                        });
+                    } else if(typeOfVote === "downvote") {
+                        dbPost.decrementPostDownvotes(db, postId, function(result) {
+                            if(result.success === false) {
+                                callback(result);
+                                return;
+                            }
+
+                            dbUser.decrementPostDownvotes(db, result.userId, function(result) {
+                                if(result.success === false) {
+                                    callback(result);
+                                    return;
+                                }
+
+                                callback({ "success": true });
+                            });
+                        });
+                    } else {
+                        console.log("MAJOR BUG in voteOnPost. Invalid typeOfVote");
+                    }
                 });
             } else {
                 //update typeOfVote
-                db.collection('postVotes').update({ "_id": result._id }, { "$set": { "typeOfPost": typeOfPost } }, function(err, removed) {
+                db.collection('postVotes').update({ "_id": result._id }, { "$set": { "typeOfVote": typeOfVote } }, function(err, removed) {
                     if(err) {
                         callback({
                             "success": false,
@@ -37,8 +75,73 @@ function voteOnPost(db, userId, postId, typeOfVote, callback) {
                         return;
                     }
 
-                    removed.success = true;
-                    callback(removed);
+                    if(typeOfVote === "upvote") {
+                        //need to increment upvote and decrement downvote
+                        dbPost.decrementPostDownvote(db, postId, function(result) {
+                            if(result.success === false) {
+                                callback(result);
+                                return;
+                            }
+
+                            dbPost.incrementPostUpvotes(db, postId, function(result) {
+                                if(result.success === false) {
+                                    callback(result);
+                                    return;
+                                }
+
+                                var userId = new ObjectID(result.userId);
+                                dbUser.decrementPostDownvote(db, userId, function(result) {
+                                    if(result.success === false) {
+                                        callback(result);
+                                        return;
+                                    }
+
+                                    dbUser.incrementPostUpvotes(db, userId, function(result) {
+                                        if(result.success === false) {
+                                            callback(result);
+                                            return;
+                                        }
+
+                                        removed.success = true;
+                                        callback(removed);
+                                    });
+                                });
+                            });
+                        });
+                    } else {
+                        //need to decrement upvote and increment downvote
+                        dbPost.decrementPostUpvote(db, postId, function(result) {
+                            if(result.success === false) {
+                                callback(result);
+                                return;
+                            }
+
+                            dbPost.incrementPostDownvotes(db, postId, function(result) {
+                                if(result.success === false) {
+                                    callback(result);
+                                    return;
+                                }
+
+                                var userId = new ObjectID(result.userId);
+                                dbUser.decrementPostUpvote(db, userId, function(result) {
+                                    if(result.success === false) {
+                                        callback(result);
+                                        return;
+                                    }
+
+                                    dbUser.incrementPostDownvotes(db, userId, function(result) {
+                                        if(result.success === false) {
+                                            callback(result);
+                                            return;
+                                        }
+
+                                        removed.success = true;
+                                        callback(removed);
+                                    });
+                                });
+                            });
+                        });
+                    }
                 });
             }
         } else {
@@ -61,7 +164,44 @@ function voteOnPost(db, userId, postId, typeOfVote, callback) {
                 }
 
                 result.success = true;
-                callback(result);
+                var firstResult = result;
+
+                //need to increment typeOfVote
+                if(typeOfVote === "upvote") {
+                    dbPost.incrementPostUpvotes(db, postId, function(result) {
+                        if(result.success === false) {
+                            callback(result);
+                            return;
+                        }
+
+                        dbUser.incrementPostUpvotes(db, result.userId, function(result) {
+                            if(result.success === false) {
+                                callback(result);
+                                return;
+                            }
+
+                            callback(firstResult);
+                        });
+                    });
+                } else if(typeOfVote === "downvote") {
+                    dbPost.incrementPostDownvotes(db, postId, function(result) {
+                        if(result.success === false) {
+                            callback(result);
+                            return;
+                        }
+
+                        dbUser.incrementPostDownvotes(db, result.userId, function(result) {
+                            if(result.success === false) {
+                                callback(result);
+                                return;
+                            }
+
+                            callback(firstResult);
+                        });
+                    });
+                } else {
+                    console.log("MAJOR BUG in voteOnPost. Invalid typeOfVote");
+                }
             });
         }
     });
@@ -91,11 +231,46 @@ function voteOnComment(db, userId, commentId, typeOfVote, callback) {
                         return;
                     }
 
-                    callback({ "success": true });
+                    //need to decrement the typeOfVote
+                    if(typeOfVote === "upvote") {
+                        dbComment.decrementCommentUpvotes(db, commentId, function(result) {
+                            if(result.success === false) {
+                                callback(result);
+                                return;
+                            }
+
+                            dbUser.decrementCommentUpvotes(db, result.userId, function(result) {
+                                if(result.success === false) {
+                                    callback(result);
+                                    return;
+                                }
+
+                                callback({ "success": true });
+                            })
+                        });
+                    } else if(typeOfVote === "downvote") {
+                        dbComment.decrementCommentDownvotes(db, commentId, function(result) {
+                            if(result.success === false) {
+                                callback(result);
+                                return;
+                            }
+
+                            dbUser.decrementCommentDownvotes(db, result.userId, function(result) {
+                                if(result.success === false) {
+                                    callback(result);
+                                    return;
+                                }
+
+                                callback({ "success": true });
+                            })
+                        });
+                    } else {
+                        console.log("MAJOR BUG in voteOnComment. Invalid typeOfVote");
+                    }
                 });
             } else {
                 //update typeOfVote
-                db.collection('commentVotes').update({ "_id": result._id }, { "$set": { "typeOfPost": typeOfPost } }, function(err, removed) {
+                db.collection('commentVotes').update({ "_id": result._id }, { "$set": { "typeOfVote": typeOfVote } }, function(err, removed) {
                     if(err) {
                         callback({
                             "success": false,
@@ -105,8 +280,73 @@ function voteOnComment(db, userId, commentId, typeOfVote, callback) {
                         return;
                     }
 
-                    removed.success = true;
-                    callback(removed);
+                    if(typeOfVote === "upvote") {
+                        //need to increment upvote and decrement downvote
+                        dbComment.decrementCommentDownvote(db, commentId, function(result) {
+                            if(result.success === false) {
+                                callback(result);
+                                return;
+                            }
+
+                            dbComment.incrementCommentUpvotes(db, commentId, function(result) {
+                                if(result.success === false) {
+                                    callback(result);
+                                    return;
+                                }
+
+                                var userId = new ObjectID(result.userId);
+                                dbUser.decrementCommentDownvote(db, userId, function(result) {
+                                    if(result.success === false) {
+                                        callback(result);
+                                        return;
+                                    }
+
+                                    dbUser.incrementCommentUpvotes(db, userId, function(result) {
+                                        if(result.success === false) {
+                                            callback(result);
+                                            return;
+                                        }
+
+                                        removed.success = true;
+                                        callback(removed);
+                                    });
+                                });
+                            });
+                        });
+                    } else {
+                        //need to decrement upvote and increment downvote
+                        dbComment.decrementCommentUpvote(db, commentId, function(result) {
+                            if(result.success === false) {
+                                callback(result);
+                                return;
+                            }
+
+                            dbComment.incrementCommentDownvotes(db, commentId, function(result) {
+                                if(result.success === false) {
+                                    callback(result);
+                                    return;
+                                }
+
+                                var userId = new ObjectID(result.userId);
+                                dbUser.decrementCommentUpvote(db, userId, function(result) {
+                                    if(result.success === false) {
+                                        callback(result);
+                                        return;
+                                    }
+
+                                    dbUser.incrementCommentDownvotes(db, userId, function(result) {
+                                        if(result.success === false) {
+                                            callback(result);
+                                            return;
+                                        }
+
+                                        removed.success = true;
+                                        callback(removed);
+                                    });
+                                });
+                            });
+                        });
+                    }
                 });
             }
         } else {
@@ -129,7 +369,44 @@ function voteOnComment(db, userId, commentId, typeOfVote, callback) {
                 }
 
                 result.success = true;
-                callback(result);
+                var firstResult = result;
+
+                //need to increment typeOfVote
+                if(typeOfVote === "upvote") {
+                    dbComment.incrementCommentUpvotes(db, commentId, function(result) {
+                        if(result.success === false) {
+                            callback(result);
+                            return;
+                        }
+
+                        dbUser.incrementCommentUpvotes(db, result.userId, function(result) {
+                            if(result.success === false) {
+                                callback(result);
+                                return;
+                            }
+
+                            callback(firstResult);
+                        });
+                    });
+                } else if(typeOfVote === "downvote") {
+                    dbComment.incrementCommentDownvotes(db, commentId, function(result) {
+                        if(result.success === false) {
+                            callback(result);
+                            return;
+                        }
+
+                        dbUser.incrementCommentDownvotes(db, result.userId, function(result) {
+                            if(result.success === false) {
+                                callback(result);
+                                return;
+                            }
+
+                            callback(firstResult);
+                        });
+                    });
+                } else {
+                    console.log("MAJOR BUG in voteOnPost. Invalid typeOfVote");
+                }
             });
         }
     });
