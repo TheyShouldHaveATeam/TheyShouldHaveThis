@@ -55,7 +55,7 @@ function voteOnPost(db, userId, postId, typeOfVote, callback) {
                     callback({
                         "success": false,
                         "error": err,
-                        "errorType": database
+                        "errorType": "database"
                     });
                     return;
                 }
@@ -124,7 +124,7 @@ function voteOnComment(db, userId, commentId, typeOfVote, callback) {
                     callback({
                         "success": false,
                         "error": err,
-                        "errorType": database
+                        "errorType": "database"
                     });
                     return;
                 }
