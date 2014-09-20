@@ -1,10 +1,10 @@
 var bcrypt = require('bcrypt-nodejs');
 
 function isValidUsername(un) {
-    var rx = /[A-Za-z0-9_-.]*{8, 28}/;
-    var matches =  un.match(rx);
+    // var rx = /[A-Za-z0-9_-.]/;
+    // var matches =  un.match(rx);
 
-    if(matches.length != 1 || un.length() < 8 || un.length > 28) {
+    if(un.length < 3 || un.length > 28) {
         return {
             "success": false,
             "error": "Username must be between 8 and 28 characters, contain only alphanumeric characters, periods or underscores ( . or _ )"
@@ -51,29 +51,29 @@ function isValidEmail(em) {
 }
 
 function isValidCredentials(username, email, password) {
-    var isValidPassword = isValidPassword(password);
-    if(!isValidPassword.success) {
+    var validPassword = isValidPassword(password);
+    if(!validPassword.success) {
         return {
             "success": false,
-            "error": isValidPassword.error,
+            "error": validPassword.error,
             "errorType": "invalidField"
         };
     }
 
-    var isValidUsername = isValidUsername(username);
-    if(!isValidUsername.success) {
+    var validUsername = isValidUsername(username);
+    if(!validUsername.success) {
         return {
             "success": false,
-            "error": isValidUsername.error,
+            "error": validUsername.error,
             "errorType": "invalidField"
         };
     }
 
-    var isValidEmail = isValidEmail(email);
-    if(!isValidEmail.success) {
+    var validEmail = isValidEmail(email);
+    if(!validEmail.success) {
         return {
             "success": false,
-            "error": isValidEmail.error,
+            "error": validEmail.error,
             "errorType": "invalidField"
         };
     }
@@ -92,9 +92,10 @@ function createUser(db, username, email, password, callback) {
             });
             return;
         } else {
-            var isValidCredentials = isValidCredentials(username, email, password);
-            if(!isValidCredentials.success) {
-                callback(isValidCredentials);
+            var validCredentials = isValidCredentials(username, email, password);
+            if(!validCredentials.success) {
+                callback(validCredentials);
+                return;
             }
 
             bcrypt.genSalt(10, function(err, salt) {
