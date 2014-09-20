@@ -29,17 +29,17 @@ MongoClient.connect((process.env.MONGODB_CONNECT
         throw err;
     }
 
-    // dbUser.createUser(db, "Rapha", "rapha@email.com", "myPassword", function(user) {
-    //     console.log(user);
-    // });
+    dbUser.createUser(db, "Rapha", "rapha@email.com", "myPassword", function(user) {
+        console.log(user);
+    });
 
-    // dbUser.deleteUser(db, new ObjectID("541d188afaf939d4ef700a36"), function(success) {
-    //     console.log(success); // 1
-    // });
+    dbUser.deleteUser(db, new ObjectID("541d188afaf939d4ef700a36"), function(success) {
+        console.log(success); // 1
+    });
 
-    // dbUser.editUser(db, new ObjectID("541d188afaf939d4ef700a36"), {username: "hay", password: "bae", email: "hey@bae.com.br"}, function(success) {
-    //     console.log(success);
-    // });
+    dbUser.editUser(db, new ObjectID("541d188afaf939d4ef700a36"), {username: "hay", password: "bae", email: "hey@bae.com.br"}, function(success) {
+        console.log(success);
+    });
 
     app.get('/', function(req, res) {
         res.render('landing');
