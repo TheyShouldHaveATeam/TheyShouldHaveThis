@@ -5,28 +5,36 @@ var PostList = React.createClass( {
 
     getInitialState: function() {
         return {
-            posts: [
-                {id: "lshagdlk", title: "Ironman", score: 100},
-                {id: "dlk", title: "Iron", score: 99},
-                {id: "shag", title: "onman", score: 0},
-                {id: "llk", title: "Ironmadsjn", score: 10}
-            ]
+            posts: []
         };
+    },
+
+    componentWillMount: function() {
+        var self = this;
+
+        $.ajax({
+            type: 'GET',
+            url: '/posts',
+            success: function(posts) {
+                self.setState({posts: posts});
+            },
+            error: function(error) {
+                console.log('error getting posts');
+                console.log(error);
+            }
+        });
     },
 
     render: function() {
         var posts = [];
         this.state.posts.forEach(function(post) {
-            console.log(post.title);
-            posts.push(<SinglePost postId={post.id} title={post.title} score={post.score} />);
+            posts.push(<SinglePost postId={post._id} title={post.idea} score={post.votes.upvotes-post.votes.downvotes} />);
         });
         return (
             <div className = "postlist">
                 {posts}
             </div>
-
         );
-
     }
 });
 
