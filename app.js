@@ -185,7 +185,9 @@ MongoClient.connect((process.env.MONGOLAB_URI
                 if(req.params.format === "json") {
                     res.json(result, 200);
                 } else {
-                    res.render('singlepost');
+                    res.render('singlepost', {
+                        currentPost: req.params.id
+                    });
                 }
             } else {
                 res.json(result, 400);
