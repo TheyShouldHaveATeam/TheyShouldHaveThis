@@ -223,18 +223,23 @@ MongoClient.connect((process.env.MONGOLAB_URI
     });
 
     app.post('/posts', function(req, res) {
-        var userId = new ObjectID(req.session.currentUser);
-        var idea = req.params.idea;
-        var desc = req.params.desc;
-        var category = req.params.category;
+        if(req.session.currentUser) {
+            var userId = req.session.currentUser; //new ObjectID(req.session.currentUser);
+            var idea = req.body.idea;
+            var desc = req.body.desc;
+            var category = req.body.category;
 
-        dbPost.createPost(db, userId, idea, desc, category, function(result) {
-            if(result.success) {
-                res.json(result, 200);
-            } else {
-                res.json(result, 400);
-            }
-        });
+            dbPost.createPost(db, userId, idea, desc, category, function(result) {
+                if(result.success) {
+                    res.json(result, 200);
+                } else {
+                    res.json(result, 400);
+                }
+            });
+        }
+        else {
+            res.send(401);
+        }
     });
 
     app.get('/posts/:id/comments', function(req, res) {
