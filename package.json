@@ -8,6 +8,7 @@
         "stylus": "*",
         "body-parser": "*",
         "cookie-parser": "*",
-        "mongodb": "*"
+        "mongodb": "*",
+        "express-session": "*"
     }
 }
