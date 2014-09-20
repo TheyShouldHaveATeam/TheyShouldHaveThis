@@ -1,15 +1,15 @@
 {
-    "name": "TheyShouldHaveThis",
-    "description": "An idea network to expedite product development by starting from the consumer!",
-    "version": "0.0.1",
-    "dependencies": {
-        "express": "4.x",
-        "jade": "*",
-        "stylus": "*",
-        "body-parser": "*",
-        "cookie-parser": "*",
-        "mongodb": "*",
-        "express-session": "*",
-        "bcrypt": "*"
-    }
+  "name": "TheyShouldHaveThis",
+  "description": "An idea network to expedite product development by starting from the consumer!",
+  "version": "0.0.1",
+  "dependencies": {
+    "body-parser": "*",
+    "cookie-parser": "*",
+    "express": "4.x",
+    "express-session": "*",
+    "jade": "*",
+    "mongodb": "*",
+    "node-bcrypt": "0.0.1",
+    "stylus": "*"
+  }
 }
