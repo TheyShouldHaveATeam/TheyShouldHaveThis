@@ -11,6 +11,7 @@ var stylus = require('stylus');
 var dbUser = require(__dirname + '/db/user.js');
 var dbPost = require(__dirname + '/db/post.js');
 var dbComment = require(__dirname + '/db/comment.js');
+var dbVote = require(__dirname + '/db/vote.js');
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
@@ -249,7 +250,7 @@ MongoClient.connect((process.env.MONGOLAB_URI
         });
     });
 
-    app.get('/posts/:id/comments/:commentId', function(req, res) {
+    app.get('/comments/:commentId', function(req, res) {
         var commentId = new ObjectID(req.params.commentId);
 
         dbComment.getComment(db, commentId, function(result) {
@@ -300,7 +301,7 @@ MongoClient.connect((process.env.MONGOLAB_URI
         });
     });
 
-    app.delete('/posts/:id/comments/:commentId', function(req, res) {
+    app.delete('/comments/:commentId', function(req, res) {
         var commentId = new ObjectID(req.params.id);
         var currentUser = new ObjectID(req.session.currentUser);
 
@@ -329,14 +330,52 @@ MongoClient.connect((process.env.MONGOLAB_URI
         });
     });
 
+    app.post('/posts/:id/vote', function(req, res) {
+        var userId = new ObjectID(req.session.currentUser);
+        var postId = new Object(req.params.id);
+        var typeOfVote = req.params.typeOfVote;
 
+        if(typeOfVote !== "upvote" && typeOfVote !== "downvote") {
+            res.json({
+                "success": false,
+                "error": "typeOfVote must be \"upvote\" or \"downvote\"",
+                "errorType": "invalidParameter"
+            }, 400);
+            return;
+        }
 
-    app.get('/posts/:id/votes', function(req, res) {
+        dbVote.voteOnPost(db, userId, postId, typeOfVote, function(result) {
+            if(!result.success) {
+                res.json(result, 400);
+                return;
+            }
 
+            res.json(result, 200);
+        });
     });
 
-    app.delete('/posts/:id/votes/:voteId', function(req, res) {
+    app.post('/comments/:id/vote', function(req, res) {
+        var userId = new ObjectID(req.session.currentUser);
+        var commentId = new Object(req.params.id);
+        var typeOfVote = req.params.typeOfVote;
 
+        if(typeOfVote !== "upvote" && typeOfVote !== "downvote") {
+            res.json({
+                "success": false,
+                "error": "typeOfVote must be \"upvote\" or \"downvote\"",
+                "errorType": "invalidParameter"
+            }, 400);
+            return;
+        }
+
+        dbVote.voteOnComment(db, userId, commentId, typeOfVote, function(result) {
+            if(!result.success) {
+                res.json(result, 400);
+                return;
+            }
+
+            res.json(result, 200);
+        });
     });
 
     app.post('/users/login', function(req, res) {

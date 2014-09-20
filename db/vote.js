@@ -12,7 +12,7 @@ function voteOnPost(db, userId, postId, typeOfVote, callback) {
         if(result) {
             if(result.typeOfVote == typeOfVote) {
                 //delete this vote
-                db.collection.('postVotes').remove({ "_id": result._id }, function(err, removed) {
+                db.collection('postVotes').remove({ "_id": result._id }, function(err, removed) {
                     if(err) {
                         callback({
                             "success": false,
@@ -27,7 +27,7 @@ function voteOnPost(db, userId, postId, typeOfVote, callback) {
                 });
             } else {
                 //update typeOfVote
-                db.collection.('postVotes').update({ "_id": result._id }, { "$set": { "typeOfPost": typeOfPost } }, function(err, removed) {
+                db.collection('postVotes').update({ "_id": result._id }, { "$set": { "typeOfPost": typeOfPost } }, function(err, removed) {
                     if(err) {
                         callback({
                             "success": false,
@@ -81,7 +81,7 @@ function voteOnComment(db, userId, commentId, typeOfVote, callback) {
         if(result) {
             if(result.typeOfVote == typeOfVote) {
                 //delete this vote
-                db.collection.('commentVotes').remove({ "_id": result._id }, function(err, removed) {
+                db.collection('commentVotes').remove({ "_id": result._id }, function(err, removed) {
                     if(err) {
                         callback({
                             "success": false,
@@ -95,7 +95,7 @@ function voteOnComment(db, userId, commentId, typeOfVote, callback) {
                 });
             } else {
                 //update typeOfVote
-                db.collection.('commentVotes').update({ "_id": result._id }, { "$set": { "typeOfPost": typeOfPost } }, function(err, removed) {
+                db.collection('commentVotes').update({ "_id": result._id }, { "$set": { "typeOfPost": typeOfPost } }, function(err, removed) {
                     if(err) {
                         callback({
                             "success": false,
@@ -137,7 +137,7 @@ function voteOnComment(db, userId, commentId, typeOfVote, callback) {
 
 function getPostVote(db, voteId, callback) {
     db.collection('postVotes').find({ "_id": voteId }, function(err, result) {
-        find(err) {
+        if(err) {
             callback({
                 "success": false,
                 "error": err,
@@ -153,7 +153,7 @@ function getPostVote(db, voteId, callback) {
 
 function getCommentVote(db, voteId, callback) {
     db.collection('commentVotes').find({ "_id": voteId }, function(err, result) {
-        find(err) {
+        if(err) {
             callback({
                 "success": false,
                 "error": err,
