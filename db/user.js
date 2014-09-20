@@ -11,7 +11,7 @@ function isValidUsername(un) {
         }
     }
 
-    return{
+    return {
         "success": true
     }
 }
@@ -90,6 +90,7 @@ function createUser(db, username, email, password, callback) {
                 "success": false,
                 "error": "A user with this username already exists"
             });
+            return;
         } else {
             // var isValidCredentials = isValidCredentials(username, email, password);
             // if(!isValidCredentials.success) {
@@ -118,6 +119,7 @@ function createUser(db, username, email, password, callback) {
                                 "error": err,
                                 "errorType": "database"
                                 });
+                                return;
                         }
 
                         var insertedUser = inserted[0];
@@ -138,6 +140,7 @@ function deleteUser(db, userId, callback) {
                 "error": err,
                 "errorType": "database"
             });
+            return;
         }
 
         removed.success = true;
@@ -183,6 +186,7 @@ function editUser(db, userId, newCredentials, callback) {
                 "error": err,
                 "errorType": "database"
             });
+            return;
         }
 
         updated.success = true;
@@ -198,6 +202,7 @@ function getUser(db, userId, callback) {
                 "error": err,
                 "errorType": "database"
             });
+            return;
         }
 
         user.success = true;
@@ -209,6 +214,7 @@ function doesUserExist(db, email, callback) {
     db.collection('users').findOne({ "email": email }, function(err, result) {
         if(err) {
             callback(err);
+            return;
         }
 
         if(result) {
@@ -249,6 +255,7 @@ function incrementPostUpvotes(db, userId, callback) {
                 "error": err,
                 "errorType": "database"
             });
+            return;
         }
 
         result.success = true;
@@ -264,6 +271,7 @@ function decrementPostUpvotes(db, userId, callback) {
                 "error": err,
                 "errorType": "database"
             });
+            return;
         }
 
         result.success = true;
@@ -279,6 +287,7 @@ function incrementCommentUpvotes(db, userId, callback) {
                 "error": err,
                 "errorType": "database"
             });
+            return;
         }
 
         result.success = true;
@@ -294,6 +303,7 @@ function decrementCommentUpvotes(db, userId, callback) {
                 "error": err,
                 "errorType": "database"
             });
+            return;
         }
 
         result.success = true;
@@ -313,6 +323,7 @@ function incrementPostDownvotes(db, userId, callback) {
                 "error": err,
                 "errorType": "database"
             });
+            return;
         }
 
         result.success = true;
@@ -328,6 +339,7 @@ function decrementPostDownvotes(db, userId, callback) {
                 "error": err,
                 "errorType": "database"
             });
+            return;
         }
 
         result.success = true;
@@ -343,6 +355,7 @@ function incrementCommentDownvotes(db, userId, callback) {
                 "error": err,
                 "errorType": "database"
             });
+            return;
         }
 
         result.success = true;
@@ -358,6 +371,7 @@ function decrementCommentDownvotes(db, userId, callback) {
                 "error": err,
                 "errorType": "database"
             });
+            return;
         }
 
         result.success = true;
@@ -366,6 +380,9 @@ function decrementCommentDownvotes(db, userId, callback) {
 }
 
 module.exports = {
+    isValidEmail: isValidEmail,
+    isValidUsername: isValidUsername,
+    isValidPassword: isValidPassword,
     createUser: createUser,
     deleteUser: deleteUser,
     editUser: editUser,

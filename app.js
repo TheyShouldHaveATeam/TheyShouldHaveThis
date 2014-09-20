@@ -9,6 +9,7 @@ var session = require('express-session');
 var stylus = require('stylus');
 
 var dbUser = require(__dirname + '/db/user.js');
+var dbPost = require(__dirname + '/db/post.js');
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
@@ -29,9 +30,9 @@ MongoClient.connect((process.env.MONGODB_CONNECT
         throw err;
     }
 
-    /*dbUser.createUser(db, "Aniruddha", "rapha@email.com", "myPassword", function(user) {
-        console.log(user);
-    });*/
+    // dbUser.createUser(db, "Aniruddha", "rapha@email.com", "myPassword", function(user) {
+    //     console.log(user);
+    // });
 
     // dbUser.deleteUser(db, new ObjectID("541d188afaf939d4ef700a36"), function(success) {
     //     console.log(success); // 1
@@ -89,16 +90,15 @@ MongoClient.connect((process.env.MONGODB_CONNECT
 
     app.put('/users/:id', function(req, res) {
         var userId = req.params.id;
+        var loggedUserId = req.session.currentUser;
 
-        var newCredentials = {};
-        if(req.body.username) {
-            newCredentials.username = req.body.username;
-        }
-        if(req.body.email) {
-            newCredentials.email = req.body.email;
-        }
-        if(req.body.password) {
-            newCredentials.password = req.body.password;
+        if(loggedUserId != userId) {
+            res.json({
+                "success": false,
+                "error": "Unmatching userIds",
+                "errorType": "authentication"
+            }, 400);
+            return;
         }
 
         dbUser.editUser(db, userId, newCredentials, function(response) {
@@ -112,6 +112,16 @@ MongoClient.connect((process.env.MONGODB_CONNECT
 
     app.delete('/users/:id', function(req, res) {
         var userId = req.params.id;
+        var loggedUserId = req.session.currentUser;
+
+        if(loggedUserId != userId) {
+            res.json({
+                "success": false,
+                "error": "Unmatching userIds",
+                "errorType": "authentication"
+            }, 400);
+            return;
+        }
 
         dbUser.deleteUser(db, userId, function(response) {
             if(response.success) {
@@ -119,6 +129,12 @@ MongoClient.connect((process.env.MONGODB_CONNECT
             } else {
                 res.json(response, 400);
             }
+        });
+    });
+
+    app.get('/posts', function(req, res) {
+        dbPost.getPosts(db, function(result) {
+            console.log(result);
         });
     });
 
