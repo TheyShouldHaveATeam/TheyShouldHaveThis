@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var MongoClient = require('mongodb').MongoClient;
 var session = require('express-session');
 
-app.set('views', '/views');
+app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 
 app.use(express.static("public"));
