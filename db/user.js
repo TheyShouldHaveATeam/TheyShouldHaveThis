@@ -36,7 +36,7 @@ var bcrypt = require('bcrypt');
 function createUser(db, username, email, password, callback) {
     // var isValidCredentials = isValidCredentials(username, email, password);
     // if(!isValidCredentials.success) {
-    //     return isValidCredentials;
+    //     callback(isValidCredentials);
     // }
 
     bcrypt.genSalt(10, function(err, salt) {
@@ -56,7 +56,10 @@ function createUser(db, username, email, password, callback) {
 
             db.collection('users').insert(user, function(err, inserted) {
                 if(err) {
-                    callback({ "success": err });
+                    callback({
+                        "success": false,
+                        "error": err
+                        });
                 }
 
                 callback(inserted);
@@ -65,6 +68,65 @@ function createUser(db, username, email, password, callback) {
     });
 }
 
+function deleteUser(db, userId, callback) {
+    db.collection('users').remove({_id: userId}, function(err, removed) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err
+            });
+        }
+
+        callback(removed);
+    });
+}
+
+function editUser(db, userId, newCredentials, callback) {
+    var modifiedUser = {"$set": {}};
+
+    if(newCredentials.username) {
+        // var isValidEmail = isValidEmail(email);
+        // if(!isValidEmail.success) {
+            // callback(isValidPassword);
+        // } else {
+            modifiedUser['$set'].username = newCredentials.username;
+        // }
+    }
+
+    if(newCredentials.email) {
+        // var isValidEmail = isValidEmail(email);
+        // if(!isValidEmail.success) {
+            // callback(isValidPassword);
+        // } else {
+            modifiedUser['$set'].email = newCredentials.email;
+        // }
+    }
+
+    if(newCredentials.password) {
+        // var isValidPassword = isValidPassword(newCredentialspassword);
+        // if(!isValidPassword.success) {
+            // callback(isValidPassword);
+        // } else {
+            modifiedUser['$set'].password = newCredentials.password;
+            // hash = bcrypt.hashSync(newCredentials.password, bcrypt.genSaltSync(10));
+            // modifiedUser['$set'].password = hash;
+        // }
+    }
+
+    db.collection('users').update({_id: userId}, modifiedUser, function(err, updated) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err
+            });
+        }
+
+        callback(updated);
+    });
+}
+
 module.exports = {
-    createUser: createUser
+    createUser: createUser,
+    deleteUser: deleteUser,
+    editUser: editUser
 };
