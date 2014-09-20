@@ -146,8 +146,141 @@ function getUser(db, userId, callback) {
     });
 }
 
+function incrementPostUpvotes(db, userId, callback) {
+    db.collection('users').update({ "_id": userId }, { "$inc": { "votes.$.postUpvotes": 1 } }, function(err, result) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+        }
+
+        result.success = true;
+        callback(result);
+    });
+}
+
+function decrementPostUpvotes(db, userId, callback) {
+    db.collection('users').update({ "_id": userId }, { "$inc": { "votes.$.postUpvotes": -1 } }, function(err, result) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+        }
+
+        result.success = true;
+        callback(result);
+    });
+}
+
+function incrementCommentUpvotes(db, userId, callback) {
+    db.collection('users').update({ "_id": userId }, { "$inc": { "votes.$.commentUpvotes": 1 } }, function(err, result) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+        }
+
+        result.success = true;
+        callback(result);
+    });
+}
+
+function decrementCommentUpvotes(db, userId, callback) {
+    db.collection('users').update({ "_id": userId }, { "$inc": { "votes.$.commentUpvotes": -1 } }, function(err, result) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+        }
+
+        result.success = true;
+        callback(result);
+    });
+}
+
+
+
+
+
+function incrementPostDownvotes(db, userId, callback) {
+    db.collection('users').update({ "_id": userId }, { "$inc": { "votes.$.postDownvotes": 1 } }, function(err, result) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+        }
+
+        result.success = true;
+        callback(result);
+    });
+}
+
+function decrementPostDownvotes(db, userId, callback) {
+    db.collection('users').update({ "_id": userId }, { "$inc": { "votes.$.postDownvotes": -1 } }, function(err, result) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+        }
+
+        result.success = true;
+        callback(result);
+    });
+}
+
+function incrementCommentDownvotes(db, userId, callback) {
+    db.collection('users').update({ "_id": userId }, { "$inc": { "votes.$.commentDownvotes": 1 } }, function(err, result) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+        }
+
+        result.success = true;
+        callback(result);
+    });
+}
+
+function decrementCommentDownvotes(db, userId, callback) {
+    db.collection('users').update({ "_id": userId }, { "$inc": { "votes.$.commentDownvotes": -1 } }, function(err, result) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+        }
+
+        result.success = true;
+        callback(result);
+    });
+}
+
 module.exports = {
     createUser: createUser,
     deleteUser: deleteUser,
-    editUser: editUser
+    editUser: editUser,
+    getUser: getUser,
+    incrementPostUpvotes: incrementPostUpvotes,
+    decrementPostUpvotes: decrementPostUpvotes,
+    incrementCommentUpvotes: incrementCommentUpvotes,
+    decrementCommentUpvotes: decrementCommentUpvotes,
+    incrementPostDownvotes: incrementPostDownvotes,
+    decrementPostDownvotes: decrementPostDownvotes,
+    incrementCommentDownvotes: incrementCommentDownvotes,
+    decrementCommentDownvotes: decrementCommentDownvotes
 };

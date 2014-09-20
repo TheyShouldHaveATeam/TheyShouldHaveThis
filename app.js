@@ -18,7 +18,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 3600000 }}))
+app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 3600000 }}));
 
 app.listen(3000);
 
