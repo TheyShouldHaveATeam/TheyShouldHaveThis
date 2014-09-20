@@ -21,10 +21,10 @@ app.use(bodyParser.json());
 
 app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 3600000 }}));
 
-app.listen(3000);
+app.listen(process.env.PORT || 3000);
 
 
-MongoClient.connect((process.env.MONGODB_CONNECT
+MongoClient.connect((process.env.MONGOLAB_URI
         || "mongodb://localhost:27017/TSHT"), function(err, db) {
     if(err) {
         throw err;
@@ -68,8 +68,8 @@ MongoClient.connect((process.env.MONGODB_CONNECT
         });
     });
 
-    app.get('/users/:id', function(req, res) {
-        var userId = req.params.id;
+    app.get('/users/:id.format?', function(req, res) {
+        var userId = new ObjectID(req.params.id);
 
         dbUser.getUser(db, userId, function(user) {
             if(user.success) {
@@ -81,7 +81,11 @@ MongoClient.connect((process.env.MONGODB_CONNECT
                     createdOn: user.createdOn
                 };
 
-                res.json(cleanUser, 200);
+                if(req.params.format === 'json') {
+                    res.json(cleanUser, 200);
+                } else {
+                    res.render('profile', cleanUser);
+                }
             } else {
                 res.json(user, 400);
             }
@@ -89,7 +93,7 @@ MongoClient.connect((process.env.MONGODB_CONNECT
     });
 
     app.put('/users/:id', function(req, res) {
-        var userId = req.params.id;
+        var userId = new ObjectID(req.params.id);
         var loggedUserId = req.session.currentUser;
 
         if(loggedUserId != userId) {
@@ -111,10 +115,10 @@ MongoClient.connect((process.env.MONGODB_CONNECT
     });
 
     app.delete('/users/:id', function(req, res) {
-        var userId = req.params.id;
+        var userId = new ObjectID(req.params.id);
         var loggedUserId = req.session.currentUser;
 
-        if(loggedUserId != userId) {
+        if(loggedUserId !== userId) {
             res.json({
                 "success": false,
                 "error": "Unmatching userIds",
@@ -134,16 +138,102 @@ MongoClient.connect((process.env.MONGODB_CONNECT
 
     app.get('/posts', function(req, res) {
         dbPost.getPosts(db, function(result) {
-            console.log(result);
+            if(result.success !== undefined) {
+                res.json(result, 400);
+                return;
+            }
+            res.json(result, 200);
+        });
+    });
+
+    app.get('/posts/:id.:format?', function(req, res) {
+        var postId = new ObjectID(req.params.id);
+
+        dbPost.getPost(db, postId, function(result) {
+            if(result.success) {
+                if(req.params.format === "json") {
+                    res.json(result, 200);
+                } else {
+                    res.render('singlepost');
+                }
+            } else {
+                res.json(result, 400);
+            }
+        });
+    });
+
+    app.delete('/posts/:id', function(req, res) {
+        var postId = new ObjectID(req.params.id);
+        var currentUser = new ObjectID(req.session.currentUser);
+
+        dbPost.getPost(db, postId, function(result) {
+            if(!result.success) {
+                res.json(result, 400);
+                return;
+            }
+
+            if(currentUser !== result.userId) {
+                res.json({
+                    "success": false,
+                    "error": "Unmatching userIds",
+                    "errorType": "authentication"
+                }, 400);
+                return;
+            }
+
+            dbPost.deletePost(db, postId, function(result) {
+                if(!result.success) {
+                    res.json(result, 400);
+                    return;
+                }
+                res.json(result, 200);
+            });
+        });
+    });
+
+    app.post('/posts', function(req, res) {
+        var userId = new ObjectID(req.session.currentUser);
+        var idea = req.params.idea;
+        var desc = req.params.desc;
+        var category = req.params.category;
+
+        dbPost.createPost(db, userId, idea, desc, category, function(result) {
+            if(result.success) {
+                res.json(result, 200);
+            } else {
+                res.json(result, 400);
+            }
         });
     });
 
     app.post('/users/login', function(req, res) {
-
+        dbUser.doesUserExist(db, req.body.email, function(userExists) {
+            if(!userExists) {
+                res.send(404);
+            }
+            else {
+                dbUser.authenticateUser(db, req.body.email, req.body.password, function(response) {
+                    if(response.success) {
+                        req.session.currentUser = response._id;
+                        res.send({
+                            id: response._id,
+                            email: response.email,
+                            username: response.username,
+                            votes: response.votes,
+                            createdOn: response.createdOn
+                        }, 200);
+                    }
+                    else {
+                        res.send(response, 401);
+                    }
+                });
+            }
+        });
     });
 
     app.post('/users/logout', function(req, res) {
-
+        req.session.userId = null;
+        res.send(204);
     });
 
     app.get('/admin', function(req, res) {

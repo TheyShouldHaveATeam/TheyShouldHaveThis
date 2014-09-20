@@ -58,13 +58,14 @@ function deletePost(db, postId, callback) {
             return;
         }
 
-        removed.success = true;
-        callback(removed);
+        callback({ "success": true });
     })
 }
 
 function getPosts(db, callback) {
-    db.collection('posts').find({}, function(result) {
+    var numberOfPosts = 25;
+
+    db.collection('posts').find({ "$query": {}, "$orderby": { "createdOn" : -1 } }).limit(numberOfPosts).toArray(function(err, result) {
         if(err) {
             callback({
                 "success": false,
@@ -74,8 +75,7 @@ function getPosts(db, callback) {
             return;
         }
 
-        result.success = true;
-        callback(removed);
+        callback(result);
     });
 }
 

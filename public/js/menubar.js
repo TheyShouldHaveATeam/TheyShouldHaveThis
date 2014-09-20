@@ -33,6 +33,7 @@ var MenuBar = React.createClass({
     },
 
     loginAsUser: function(user) {
+        var self = this;
         console.log(JSON.stringify(user,null,4));
         // TODO check values before sending
         $.ajax({
@@ -45,11 +46,26 @@ var MenuBar = React.createClass({
             success: function(loggedInUser) {
                 console.log('logged in as user');
                 console.log(JSON.stringify(loggedInUser, null, 4));
-                this.setState({currentUser: loggedInUser});
+                self.setState({currentUser: loggedInUser});
             },
             error: function(error) {
                 console.log('error logging in as user');
                 console.log(error);
+            }
+        });
+    },
+
+    logout: function() {
+        var self = this;
+        $.ajax({
+            type: 'POST',
+            url: '/users/logout',
+            success: function(response) {
+                console.log('successfully logged out');
+                self.setState({currentUser: null});
+            },
+            error: function(error) {
+                console.log('error logging out');
             }
         });
     },

@@ -23,7 +23,7 @@ function voteOnPost(db, userId, postId, typeOfVote, callback) {
                     }
 
                     removed.success = true;
-                    callback(removed);
+                    callback({ "success": true });
                 });
             } else {
                 //update typeOfVote
@@ -91,8 +91,7 @@ function voteOnComment(db, userId, commentId, typeOfVote, callback) {
                         return;
                     }
 
-                    removed.success = true;
-                    callback(removed);
+                    callback({ "success": true });
                 });
             } else {
                 //update typeOfVote
