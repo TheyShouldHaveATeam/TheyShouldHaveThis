@@ -146,6 +146,35 @@ MongoClient.connect((process.env.MONGOLAB_URI
         });
     });
 
+    app.get('/posts/categories/:category.:format?', function(req, res) {
+        var category = req.params.category;
+
+        dbPost.getCategoryPosts(db, category, function(result) {
+            if(result.success !== undefined) {
+                res.json(result, 400);
+                return;
+            }
+            if(req.params.format === 'json') {
+                res.json(result, 200);
+            } else {
+                res.render('category', result);
+            }
+        });
+    });
+
+    app.get('/posts/user/:userId', function(req, res) {
+        var userId = new ObjectID(req.params.userId);
+
+        dbPost.getUserPosts(db, userId, function(result) {
+            if(result.success !== undefined) {
+                res.json(result, 400);
+                return;
+            }
+
+            res.json(result, 200);
+        });
+    });
+
     app.get('/posts/:id.:format?', function(req, res) {
         var postId = new ObjectID(req.params.id);
 

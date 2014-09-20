@@ -79,9 +79,45 @@ function getPosts(db, callback) {
     });
 }
 
+function getCategoryPosts(db, category, callback) {
+    var numberOfPosts = 25;
+
+    db.collection('posts').find({ "$query": { "category": category }, "$orderby": { "createdOn" : -1 } }).limit(numberOfPosts).toArray(function(err, result) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+            return;
+        }
+
+        callback(result);
+    });
+}
+
+function getUserPosts(db, userId, callback) {
+    var numberOfPosts = 25;
+
+    db.collection('posts').find({ "$query": { "userId": userId }, "$orderby": { "createdOn" : -1 } }).limit(numberOfPosts).toArray(function(err, result) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+            return;
+        }
+
+        callback(result);
+    });
+}
+
 module.exports = {
     getPost: getPost,
     createPost: createPost,
     deletePost: deletePost,
-    getPosts: getPosts
+    getPosts: getPosts,
+    getCategoryPosts: getCategoryPosts,
+    getUserPosts: getUserPosts
 }
