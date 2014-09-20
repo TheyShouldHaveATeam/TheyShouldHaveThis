@@ -58,8 +58,7 @@ function deletePost(db, postId, callback) {
             return;
         }
 
-        removed.success = true;
-        callback(removed);
+        callback({ "success": true });
     })
 }
 
