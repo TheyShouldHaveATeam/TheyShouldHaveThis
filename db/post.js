@@ -42,8 +42,9 @@ function createPost(db, userId, idea, desc, category, callback) {
             return;
         }
 
-        inserted.success = true;
-        callback(inserted);
+        var insertedPost = inserted[0];
+        insertedPost.success = true;
+        callback(insertedPost);
     });
 }
 

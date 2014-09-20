@@ -118,8 +118,8 @@ function createUser(db, username, email, password, callback) {
                                 "success": false,
                                 "error": err,
                                 "errorType": "database"
-                                });
-                                return;
+                            });
+                            return;
                         }
 
                         var insertedUser = inserted[0];
