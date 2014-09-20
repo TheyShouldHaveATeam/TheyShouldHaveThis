@@ -18,7 +18,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 3600000 }}))
+app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 3600000 }}));
 
 app.listen(3000);
 
@@ -45,6 +45,75 @@ MongoClient.connect((process.env.MONGODB_CONNECT
         res.render('landing');
     });
 
+    app.post('/users', function(req, res) {
+        var username = req.body.username;
+        var email = req.body.email;
+        var password = req.body.password;
+
+        dbUser.createUser(db, username, email, password, function(response) {
+            if(response.success) {
+                res.json(response, 201);
+            } else {
+                res.json(response, 400);
+            }
+        });
+    });
+
+    app.get('/users/:id', function(req, res) {
+        var userId = req.params.id;
+
+        dbUser.getUser(db, userId, function(user) {
+            if(user.success) {
+                var cleanUser = {
+                    "_id": userId,
+                    "username": user.username,
+                    "email": user.email,
+                    "createdOn": user.createdOn,
+                    "votes": user.votes
+                };
+
+                res.json(cleanUser, 200);
+            } else {
+                res.json(user, 400);
+            }
+        });
+    });
+
+    app.put('/users/:id', function(req, res) {
+        var userId = req.params.id;
+
+        var newCredentials = {};
+        if(req.body.username) {
+            newCredentials.username = req.body.username;
+        }
+        if(req.body.email) {
+            newCredentials.email = req.body.email;
+        }
+        if(req.body.password) {
+            newCredentials.password = req.body.password;
+        }
+
+        dbUser.editUser(db, userId, newCredentials, function(response) {
+            if(response.success) {
+                res.json(response, 200);
+            } else {
+                res.json(response, 400);
+            }
+        });
+    });
+
+    app.delete('/users/:id', function(req, res) {
+        var userId = req.params.id;
+
+        dbUser.deleteUser(db, userId, function(response) {
+            if(response.success) {
+                res.json(response, 200);
+            } else {
+                res.json(response, 400);
+            }
+        });
+    });
+
     app.get('/admin', function(req, res) {
         req.session.admin = true;
         res.send('access granted');
@@ -53,6 +122,5 @@ MongoClient.connect((process.env.MONGODB_CONNECT
     app.get('/protected',  function(req, res) {
         if (!req.session.admin) return res.send(401);
         res.send(200);
-
     });
 });

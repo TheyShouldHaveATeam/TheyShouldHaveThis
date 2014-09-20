@@ -82,37 +82,48 @@ function isValidCredentials(username, email, password) {
 }
 
 function createUser(db, username, email, password, callback) {
-    // var isValidCredentials = isValidCredentials(username, email, password);
-    // if(!isValidCredentials.success) {
-    //     callback(isValidCredentials);
-    // }
-
-    bcrypt.genSalt(10, function(err, salt) {
-        bcrypt.hash(password, salt, function(err, hash) {
-            var user = {
-                "username": username,
-                "password": password,
-                "email": email,
-                "createdOn": Date.now(),
-                "votes": {
-                    "postUpvotes": 0,
-                    "postDownvotes": 0,
-                    "commentUpvotes": 0,
-                    "commentDownvotes": 0
-                }
-            };
-
-            db.collection('users').insert(user, function(err, inserted) {
-                if(err) {
-                    callback({
-                        "success": false,
-                        "error": err
-                        });
-                }
-
-                callback(inserted);
+    doesUserExist(db, username, function(userExists) {
+        if (userExists) {
+            callback({
+                "success": false,
+                "error": "A user with this username already exists"
             });
-        });
+        } else {
+            // var isValidCredentials = isValidCredentials(username, email, password);
+            // if(!isValidCredentials.success) {
+            //     callback(isValidCredentials);
+            // }
+
+            bcrypt.genSalt(10, function(err, salt) {
+                bcrypt.hash(password, salt, function(err, hash) {
+                    var user = {
+                        "username": username,
+                        "password": password,
+                        "email": email,
+                        "createdOn": Date.now(),
+                        "votes": {
+                            "postUpvotes": 0,
+                            "postDownvotes": 0,
+                            "commentUpvotes": 0,
+                            "commentDownvotes": 0
+                        }
+                    };
+
+                    db.collection('users').insert(user, function(err, inserted) {
+                        if(err) {
+                            callback({
+                                "success": false,
+                                "error": err,
+                                "errorType": "database"
+                                });
+                        }
+
+                        inserted.success = true;
+                        callback(inserted);
+                    });
+                });
+            });
+        }
     });
 }
 
@@ -121,10 +132,12 @@ function deleteUser(db, userId, callback) {
         if(err) {
             callback({
                 "success": false,
-                "error": err
+                "error": err,
+                "errorType": "database"
             });
         }
 
+        removed.success = true;
         callback(removed);
     });
 }
@@ -155,9 +168,8 @@ function editUser(db, userId, newCredentials, callback) {
         // if(!isValidPassword.success) {
             // callback(isValidPassword);
         // } else {
-            modifiedUser['$set'].password = newCredentials.password;
-            // hash = bcrypt.hashSync(newCredentials.password, bcrypt.genSaltSync(10));
-            // modifiedUser['$set'].password = hash;
+            hash = bcrypt.hashSync(newCredentials.password, bcrypt.genSaltSync(10));
+            modifiedUser['$set'].password = hash;
         // }
     }
 
@@ -165,16 +177,207 @@ function editUser(db, userId, newCredentials, callback) {
         if(err) {
             callback({
                 "success": false,
-                "error": err
+                "error": err,
+                "errorType": "database"
             });
         }
 
+        updated.success = true;
         callback(updated);
+    });
+}
+
+function getUser(db, userId, callback) {
+    db.collection('users').find({_id: userId}, function(err, user) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+        }
+
+        user.success = true;
+        callback(user)
+    });
+}
+
+function doesUserExist(db, username, callback) {
+    db.collection('users').find({ "username": username }, function(err, result) {
+        if(err) {
+            callback(err);
+        }
+
+        if(result) {
+            callback(true);
+        } else {
+            callback(false);
+        }
+
+    });
+}
+
+function authenticateUser(db, username, password, callback) {
+    bcrypt.genSalt(10, function(err, salt) {
+        bcrypt.hash(password, salt, function(err, hash) {
+            db.collection('users').find({ "username": username, "password": hash }, function(err, result) {
+                if(err) {
+                    callback(err);
+                }
+
+                if(result) {
+                    result.success = true;
+                    callback(result);
+                } else {
+                    callback({
+                        "success": false,
+                        "error": "A use with this username/password does not exist.",
+                        "errorType": "authentication"
+                    });
+                }
+
+            });
+        });
+    });
+}
+
+function incrementPostUpvotes(db, userId, callback) {
+    db.collection('users').update({ "_id": userId }, { "$inc": { "votes.$.postUpvotes": 1 } }, function(err, result) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+        }
+
+        result.success = true;
+        callback(result);
+    });
+}
+
+function decrementPostUpvotes(db, userId, callback) {
+    db.collection('users').update({ "_id": userId }, { "$inc": { "votes.$.postUpvotes": -1 } }, function(err, result) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+        }
+
+        result.success = true;
+        callback(result);
+    });
+}
+
+function incrementCommentUpvotes(db, userId, callback) {
+    db.collection('users').update({ "_id": userId }, { "$inc": { "votes.$.commentUpvotes": 1 } }, function(err, result) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+        }
+
+        result.success = true;
+        callback(result);
+    });
+}
+
+function decrementCommentUpvotes(db, userId, callback) {
+    db.collection('users').update({ "_id": userId }, { "$inc": { "votes.$.commentUpvotes": -1 } }, function(err, result) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+        }
+
+        result.success = true;
+        callback(result);
+    });
+}
+
+
+
+
+
+function incrementPostDownvotes(db, userId, callback) {
+    db.collection('users').update({ "_id": userId }, { "$inc": { "votes.$.postDownvotes": 1 } }, function(err, result) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+        }
+
+        result.success = true;
+        callback(result);
+    });
+}
+
+function decrementPostDownvotes(db, userId, callback) {
+    db.collection('users').update({ "_id": userId }, { "$inc": { "votes.$.postDownvotes": -1 } }, function(err, result) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+        }
+
+        result.success = true;
+        callback(result);
+    });
+}
+
+function incrementCommentDownvotes(db, userId, callback) {
+    db.collection('users').update({ "_id": userId }, { "$inc": { "votes.$.commentDownvotes": 1 } }, function(err, result) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+        }
+
+        result.success = true;
+        callback(result);
+    });
+}
+
+function decrementCommentDownvotes(db, userId, callback) {
+    db.collection('users').update({ "_id": userId }, { "$inc": { "votes.$.commentDownvotes": -1 } }, function(err, result) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+        }
+
+        result.success = true;
+        callback(result);
     });
 }
 
 module.exports = {
     createUser: createUser,
     deleteUser: deleteUser,
-    editUser: editUser
+    editUser: editUser,
+    getUser: getUser,
+    doesUserExist: doesUserExist,
+    authenticateUser: authenticateUser,
+    incrementPostUpvotes: incrementPostUpvotes,
+    decrementPostUpvotes: decrementPostUpvotes,
+    incrementCommentUpvotes: incrementCommentUpvotes,
+    decrementCommentUpvotes: decrementCommentUpvotes,
+    incrementPostDownvotes: incrementPostDownvotes,
+    decrementPostDownvotes: decrementPostDownvotes,
+    incrementCommentDownvotes: incrementCommentDownvotes,
+    decrementCommentDownvotes: decrementCommentDownvotes
 };
