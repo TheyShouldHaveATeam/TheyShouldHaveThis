@@ -24,7 +24,7 @@ app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 3600000 }}));
 app.listen(3000);
 
 
-MongoClient.connect((process.env.MONGODB_CONNECT
+MongoClient.connect((process.env.MONGOLAB_URI
         || "mongodb://localhost:27017/TSHT"), function(err, db) {
     if(err) {
         throw err;
