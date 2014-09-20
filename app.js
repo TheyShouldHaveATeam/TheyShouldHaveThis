@@ -42,6 +42,7 @@ MongoClient.connect((process.env.MONGODB_CONNECT
     // });
 
     app.get('/', function(req, res) {
+        console.log('current user: ' + req.session.currentUser);
         res.render('landing');
     });
 
@@ -58,7 +59,7 @@ MongoClient.connect((process.env.MONGODB_CONNECT
                     email: response.email,
                     username: response.username,
                     votes: response.votes,
-                    createdOn: user.createdOn
+                    createdOn: response.createdOn
                 }, 201);
             } else {
                 res.json(response, 400);
