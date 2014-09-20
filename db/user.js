@@ -70,8 +70,9 @@ function createUser(db, username, email, password, callback) {
                                 });
                         }
 
-                        inserted.success = true;
-                        callback(inserted);
+                        var insertedUser = inserted[0];
+                        insertedUser.success = true;
+                        callback(insertedUser);
                     });
                 });
             });
