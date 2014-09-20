@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 
 app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 3600000 }}));
 
-app.listen(3000);
+app.listen(process.env.PORT || 3000);
 
 
 MongoClient.connect((process.env.MONGOLAB_URI
