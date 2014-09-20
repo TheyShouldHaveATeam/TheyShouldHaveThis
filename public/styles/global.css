@@ -56,3 +56,6 @@ form input {
   bottom: 0;
   display: none;
 }
+#current-user {
+  display: none;
+}

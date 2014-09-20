@@ -194,7 +194,7 @@ function editUser(db, userId, newCredentials, callback) {
 }
 
 function getUser(db, userId, callback) {
-    db.collection('users').find({_id: userId}, function(err, user) {
+    db.collection('users').findOne({_id: userId}, function(err, user) {
         if(err) {
             callback({
                 "success": false,
@@ -203,7 +203,6 @@ function getUser(db, userId, callback) {
             });
             return;
         }
-
         user.success = true;
         callback(user)
     });
