@@ -17,10 +17,12 @@ function isValidUsername(un) {
 }
 
 function isValidPassword(pw) {
-    var rx = /[^s]*{8, 28}/;
+    console.log(pw);
+    var rx = /[^s]/;
     var matches =  pw.match(rx);
+    console.log(matches)
 
-    if(matches.length != 1 || pw.length() < 8 || pw.length > 28) {
+    if(!matches || matches.length != 1 || pw.length < 8 || pw.length > 28) {
         return {
             "success": false,
             "error": "Password must be between 8 and 28 characters and cannot contain whitespace"
@@ -379,5 +381,6 @@ module.exports = {
     incrementPostDownvotes: incrementPostDownvotes,
     decrementPostDownvotes: decrementPostDownvotes,
     incrementCommentDownvotes: incrementCommentDownvotes,
-    decrementCommentDownvotes: decrementCommentDownvotes
+    decrementCommentDownvotes: decrementCommentDownvotes,
+    isValidPassword: isValidPassword
 };
