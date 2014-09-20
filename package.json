@@ -9,7 +9,7 @@
     "express-session": "*",
     "jade": "*",
     "mongodb": "*",
-    "node-bcrypt": "0.0.1",
+    "bcrypt-nodejs": "*",
     "stylus": "*"
   }
 }
