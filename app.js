@@ -68,7 +68,7 @@ MongoClient.connect((process.env.MONGOLAB_URI
         });
     });
 
-    app.get('/users/:id', function(req, res) {
+    app.get('/users/:id.format?', function(req, res) {
         var userId = new ObjectID(req.params.id);
 
         dbUser.getUser(db, userId, function(user) {
@@ -81,7 +81,11 @@ MongoClient.connect((process.env.MONGOLAB_URI
                     createdOn: user.createdOn
                 };
 
-                res.json(cleanUser, 200);
+                if(req.params.format === 'json') {
+                    res.json(cleanUser, 200);
+                } else {
+                    res.render('profile', cleanUser);
+                }
             } else {
                 res.json(user, 400);
             }
@@ -142,12 +146,16 @@ MongoClient.connect((process.env.MONGOLAB_URI
         });
     });
 
-    app.get('/posts/:id', function(req, res) {
+    app.get('/posts/:id.:format?', function(req, res) {
         var postId = new ObjectID(req.params.id);
 
         dbPost.getPost(db, postId, function(result) {
             if(result.success) {
-                res.json(result, 200);
+                if(req.params.format === "json") {
+                    res.json(result, 200);
+                } else {
+                    res.render('singlepost');
+                }
             } else {
                 res.json(result, 400);
             }
