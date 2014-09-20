@@ -97,10 +97,10 @@ function createUser(db, username, email, password, callback) {
             // }
 
             bcrypt.genSalt(10, function(err, salt) {
-                bcrypt.hash(password, salt, function(err, hash) {
+                bcrypt.hash(password, salt, null, function(err, hash) {
                     var user = {
                         "username": username,
-                        "password": password,
+                        "password": hash,
                         "email": email,
                         "createdOn": Date.now(),
                         "votes": {
@@ -120,8 +120,9 @@ function createUser(db, username, email, password, callback) {
                                 });
                         }
 
-                        inserted.success = true;
-                        callback(inserted);
+                        var insertedUser = inserted[0];
+                        insertedUser.success = true;
+                        callback(insertedUser);
                     });
                 });
             });
@@ -205,7 +206,8 @@ function getUser(db, userId, callback) {
 }
 
 function doesUserExist(db, username, callback) {
-    db.collection('users').find({ "username": username }, function(err, result) {
+    // TODO both username AND email should be checked for duplicates
+    db.collection('users').findOne({ "username": username }, function(err, result) {
         if(err) {
             callback(err);
         }
@@ -221,7 +223,7 @@ function doesUserExist(db, username, callback) {
 
 function authenticateUser(db, username, password, callback) {
     bcrypt.genSalt(10, function(err, salt) {
-        bcrypt.hash(password, salt, function(err, hash) {
+        bcrypt.hash(password, salt, null, function(err, hash) {
             db.collection('users').find({ "username": username, "password": hash }, function(err, result) {
                 if(err) {
                     callback(err);

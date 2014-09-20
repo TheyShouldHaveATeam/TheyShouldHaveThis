@@ -53,7 +53,14 @@ MongoClient.connect((process.env.MONGODB_CONNECT
 
         dbUser.createUser(db, username, email, password, function(response) {
             if(response.success) {
-                res.json(response, 201);
+                req.session.currentUser = response._id;
+                res.json({
+                    id: response._id,
+                    email: response.email,
+                    username: response.username,
+                    votes: response.votes,
+                    createdOn: user.createdOn
+                }, 201);
             } else {
                 res.json(response, 400);
             }
@@ -66,11 +73,11 @@ MongoClient.connect((process.env.MONGODB_CONNECT
         dbUser.getUser(db, userId, function(user) {
             if(user.success) {
                 var cleanUser = {
-                    "_id": userId,
-                    "username": user.username,
-                    "email": user.email,
-                    "createdOn": user.createdOn,
-                    "votes": user.votes
+                    id: userId,
+                    username: user.username,
+                    email: user.email,
+                    votes: user.votes,
+                    createdOn: user.createdOn
                 };
 
                 res.json(cleanUser, 200);
@@ -113,6 +120,14 @@ MongoClient.connect((process.env.MONGODB_CONNECT
                 res.json(response, 400);
             }
         });
+    });
+
+    app.post('/users/login', function(req, res) {
+
+    });
+
+    app.post('/users/logout', function(req, res) {
+
     });
 
     app.get('/admin', function(req, res) {

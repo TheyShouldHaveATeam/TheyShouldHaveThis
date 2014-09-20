@@ -1,11 +1,74 @@
 /** @jsx React.DOM */
 
 var MenuBar = React.createClass({
+    getInitialState: function() {
+        return {
+            currentUser: this.props.currentUser || null
+        };
+    },
+
+    createUser: function(user) {
+        var self = this;
+
+        // TODO check values before sending
+        console.log(JSON.stringify(user,null,4));
+        $.ajax({
+            type: 'POST',
+            url: '/users',
+            data: {
+                email: user.email,
+                username: user.username,
+                password: user.password
+            },
+            success: function(newUser) {
+                console.log('created user');
+                console.log(JSON.stringify(newUser, null, 4));
+                self.setState({currentUser: newUser});
+            },
+            error: function(error) {
+                console.log('error creating user');
+                console.log(error);
+            }
+        });
+    },
+
+    loginAsUser: function(user) {
+        console.log(JSON.stringify(user,null,4));
+        // TODO check values before sending
+        $.ajax({
+            type: 'POST',
+            url: '/users/login',
+            data: {
+                email: user.email,
+                password: user.password
+            },
+            success: function(loggedInUser) {
+                console.log('logged in as user');
+                console.log(JSON.stringify(loggedInUser, null, 4));
+                this.setState({currentUser: loggedInUser});
+            },
+            error: function(error) {
+                console.log('error logging in as user');
+                console.log(error);
+            }
+        });
+    },
+
     render: function() {
+        var menuContent = [
+            <UserSignupModal key='signup' createUser={this.createUser} />,
+            <UserLoginModal key='login' loginAsUser={this.loginAsUser} />
+        ];
+        console.log(this.state.currentUser);
+        if(this.state.currentUser) {
+            menuContent = [
+                <h3>Logged in as {this.state.currentUser.email}</h3>,
+                <button type='button' onClick={this.logout}>Log out</button>
+            ];
+        }
         return (
             <div className='menu-bar'>
-                <UserSignupModal />
-                <UserLoginModal />
+                { menuContent }
             </div>
         );
     }
@@ -32,33 +95,19 @@ var UserSignupModal = React.createClass({
         this.setState({password: event.target.value});
     },
 
-    handleSignup: function(e) {
+    handleFormSubmit: function(e) {
         e.preventDefault();
         console.log('signup');
-
-        // TODO check values before sending
-        $.ajax({
-            type: 'POST',
-            url: '/users',
-            data: {
-                email: this.state.email,
-                username: this.state.username,
-                password: this.state.password
-            },
-            success: function(user) {
-                console.log('created user');
-                console.log(JSON.stringify(user, null, 4));
-            },
-            error: function(error) {
-                console.log('error creating user');
-                console.log(error);
-            }
+        this.props.createUser({
+            email: this.state.email,
+            username: this.state.username,
+            password: this.state.password
         });
     },
 
     render: function() {
         return (
-            <form className='signup-form' onSubmit={this.handleSignup}>
+            <form className='signup-form' onSubmit={this.handleFormSubmit}>
                 <label htmlFor='email'>Email</label>
                 <input type='email' name='email' value={this.state.email} onChange={this.handleEmailChange} />
                 <label htmlFor='username'>Username</label>
@@ -87,32 +136,18 @@ var UserLoginModal = React.createClass({
         this.setState({password: event.target.value});
     },
 
-    handleLogin: function(e) {
+    handleFormSubmit: function(e) {
         e.preventDefault();
         console.log('login');
-
-        // TODO check values before sending
-        $.ajax({
-            type: 'POST',
-            url: '/users/login',
-            data: {
-                email: this.state.email,
-                password: this.state.password
-            },
-            success: function(user) {
-                console.log('logged in as user');
-                console.log(JSON.stringify(user, null, 4));
-            },
-            error: function(error) {
-                console.log('error logging in as user');
-                console.log(error);
-            }
+        this.props.loginAsUser({
+            email: this.state.email,
+            password: this.state.password
         });
     },
 
     render: function() {
         return (
-            <form className='signup-form' onSubmit={this.handleLogin}>
+            <form className='signup-form' onSubmit={this.handleFormSubmit}>
                 <label htmlFor='email'>Email</label>
                 <input type='email' name='email' value={this.state.email} onChange={this.handleEmailChange} />
                 <label htmlFor='password'>Password</label>
@@ -124,6 +159,6 @@ var UserLoginModal = React.createClass({
 });
 
 React.renderComponent(
-    <MenuBar />,
+    <MenuBar loggedIn={false} />,
     document.getElementById('menubar')
 );
