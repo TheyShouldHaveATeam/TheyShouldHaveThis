@@ -50,7 +50,7 @@ function createUser(db, username, email, password, callback) {
                 bcrypt.hash(password, salt, null, function(err, hash) {
                     var user = {
                         "username": username,
-                        "password": password,
+                        "password": hash,
                         "email": email,
                         "createdOn": Date.now(),
                         "votes": {
