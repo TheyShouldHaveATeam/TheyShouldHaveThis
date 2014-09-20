@@ -114,7 +114,7 @@ MongoClient.connect((process.env.MONGOLAB_URI
         var userId = req.params.id;
         var loggedUserId = req.session.currentUser;
 
-        if(loggedUserId != userId) {
+        if(loggedUserId !== userId) {
             res.json({
                 "success": false,
                 "error": "Unmatching userIds",
@@ -134,7 +134,11 @@ MongoClient.connect((process.env.MONGOLAB_URI
 
     app.get('/posts', function(req, res) {
         dbPost.getPosts(db, function(result) {
-            console.log(result);
+            if(result.success !== undefined) {
+                res.json(result, 400);
+                return;
+            }
+            res.json(result, 200)
         });
     });
 
