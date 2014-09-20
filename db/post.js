@@ -113,11 +113,79 @@ function getUserPosts(db, userId, callback) {
     });
 }
 
+function incrementPostUpvotes(db, postId, callback) {
+    db.collection('posts').update({ "_id": postId }, { "$inc": { "votes.$.upvotes": 1 } }, function(err, result) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+            return;
+        }
+
+        result.success = true;
+        callback(result);
+    });
+}
+
+function decrementPostUpvotes(db, postId, callback) {
+    db.collection('posts').update({ "_id": postId }, { "$inc": { "votes.$.upvotes": -1 } }, function(err, result) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+            return;
+        }
+
+        result.success = true;
+        callback(result);
+    });
+}
+
+function incrementPostDownvotes(db, postId, callback) {
+    db.collection('posts').update({ "_id": postId }, { "$inc": { "votes.$.downvotes": 1 } }, function(err, result) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+            return;
+        }
+
+        result.success = true;
+        callback(result);
+    });
+}
+
+function decrementPostDownvotes(db, postId, callback) {
+    db.collection('posts').update({ "_id": postId }, { "$inc": { "votes.$.downvotes": -1 } }, function(err, result) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+            return;
+        }
+
+        result.success = true;
+        callback(result);
+    });
+}
+
 module.exports = {
     getPost: getPost,
     createPost: createPost,
     deletePost: deletePost,
     getPosts: getPosts,
     getCategoryPosts: getCategoryPosts,
-    getUserPosts: getUserPosts
+    getUserPosts: getUserPosts,
+    incrementPostUpvotes: incrementPostUpvotes,
+    decrementPostUpvotes: decrementPostUpvotes,
+    incrementPostDownvotes: incrementPostDownvotes,
+    decrementPostDownvotes: decrementPostDownvotes
 }

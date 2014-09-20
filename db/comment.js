@@ -78,9 +78,77 @@ function getComments(db, postId, callback) {
     });
 }
 
+function incrementCommentUpvotes(db, commentId, callback) {
+    db.collection('comments').update({ "_id": commentId }, { "$inc": { "votes.$.upvotes": 1 } }, function(err, result) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+            return;
+        }
+
+        result.success = true;
+        callback(result);
+    });
+}
+
+function decrementCommentUpvotes(db, commentId, callback) {
+    db.collection('comments').update({ "_id": commentId }, { "$inc": { "votes.$.upvotes": -1 } }, function(err, result) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+            return;
+        }
+
+        result.success = true;
+        callback(result);
+    });
+}
+
+function incrementCommentDownvotes(db, commentId, callback) {
+    db.collection('comments').update({ "_id": commentId }, { "$inc": { "votes.$.downvotes": 1 } }, function(err, result) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+            return;
+        }
+
+        result.success = true;
+        callback(result);
+    });
+}
+
+function decrementCommentDownvotes(db, commentId, callback) {
+    db.collection('comments').update({ "_id": commentId }, { "$inc": { "votes.$.downvotes": -1 } }, function(err, result) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+            return;
+        }
+
+        result.success = true;
+        callback(result);
+    });
+}
+
 module.exports = {
     getComment: getComment,
     createComment: createComment,
     deleteComment: deleteComment,
-    getComments: getComments
+    getComments: getComments,
+    incrementCommentUpvotes: incrementCommentUpvotes,
+    decrementCommentUpvotes: decrementCommentUpvotes,
+    incrementCommentDownvotes: incrementCommentDownvotes,
+    decrementCommentDownvotes: decrementCommentDownvotes
 }
