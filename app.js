@@ -42,7 +42,6 @@ MongoClient.connect((process.env.MONGODB_CONNECT
     // });
 
     app.get('/', function(req, res) {
-        console.log(dbUser.isValidPassword("aniruddha0828"));
         res.render('landing');
     });
 
