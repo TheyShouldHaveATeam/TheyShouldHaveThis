@@ -261,7 +261,7 @@ MongoClient.connect((process.env.MONGOLAB_URI
     });
 
     app.post('/users/logout', function(req, res) {
-        req.session.userId = null;
+        req.session.currentUser = null;
         res.send(204);
     });
 
