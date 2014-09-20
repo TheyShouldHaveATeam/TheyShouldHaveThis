@@ -34,39 +34,48 @@ var bcrypt = require('bcrypt-nodejs');
 // }
 
 function createUser(db, username, email, password, callback) {
-    // var isValidCredentials = isValidCredentials(username, email, password);
-    // if(!isValidCredentials.success) {
-    //     callback(isValidCredentials);
-    // }
-
-    bcrypt.genSalt(10, function(err, salt) {
-        bcrypt.hash(password, salt, function(err, hash) {
-            var user = {
-                "username": username,
-                "password": password,
-                "email": email,
-                "createdOn": Date.now(),
-                "votes": {
-                    "postUpvotes": 0,
-                    "postDownvotes": 0,
-                    "commentUpvotes": 0,
-                    "commentDownvotes": 0
-                }
-            };
-
-            db.collection('users').insert(user, function(err, inserted) {
-                if(err) {
-                    callback({
-                        "success": false,
-                        "error": err,
-                        "errorType": "database"
-                        });
-                }
-
-                inserted.success = true;
-                callback(inserted);
+    doesUserExist(db, username, function(userExists) {
+        if (userExists) {
+            callback({
+                "success": false,
+                "error": "A user with this username already exists"
             });
-        });
+        } else {
+            // var isValidCredentials = isValidCredentials(username, email, password);
+            // if(!isValidCredentials.success) {
+            //     callback(isValidCredentials);
+            // }
+
+            bcrypt.genSalt(10, function(err, salt) {
+                bcrypt.hash(password, salt, function(err, hash) {
+                    var user = {
+                        "username": username,
+                        "password": password,
+                        "email": email,
+                        "createdOn": Date.now(),
+                        "votes": {
+                            "postUpvotes": 0,
+                            "postDownvotes": 0,
+                            "commentUpvotes": 0,
+                            "commentDownvotes": 0
+                        }
+                    };
+
+                    db.collection('users').insert(user, function(err, inserted) {
+                        if(err) {
+                            callback({
+                                "success": false,
+                                "error": err,
+                                "errorType": "database"
+                                });
+                        }
+
+                        inserted.success = true;
+                        callback(inserted);
+                    });
+                });
+            });
+        }
     });
 }
 
@@ -111,9 +120,8 @@ function editUser(db, userId, newCredentials, callback) {
         // if(!isValidPassword.success) {
             // callback(isValidPassword);
         // } else {
-            modifiedUser['$set'].password = newCredentials.password;
-            // hash = bcrypt.hashSync(newCredentials.password, bcrypt.genSaltSync(10));
-            // modifiedUser['$set'].password = hash;
+            hash = bcrypt.hashSync(newCredentials.password, bcrypt.genSaltSync(10));
+            modifiedUser['$set'].password = hash;
         // }
     }
 
@@ -143,6 +151,45 @@ function getUser(db, userId, callback) {
 
         user.success = true;
         callback(user)
+    });
+}
+
+function doesUserExist(db, username, callback) {
+    db.collection('users').find({ "username": username }, function(err, result) {
+        if(err) {
+            callback(err);
+        }
+
+        if(result) {
+            callback(true);
+        } else {
+            callback(false);
+        }
+
+    });
+}
+
+function authenticateUser(db, username, password, callback) {
+    bcrypt.genSalt(10, function(err, salt) {
+        bcrypt.hash(password, salt, function(err, hash) {
+            db.collection('users').find({ "username": username, "password": hash }, function(err, result) {
+                if(err) {
+                    callback(err);
+                }
+
+                if(result) {
+                    result.success = true;
+                    callback(result);
+                } else {
+                    callback({
+                        "success": false,
+                        "error": "A use with this username/password does not exist.",
+                        "errorType": "authentication"
+                    });
+                }
+
+            });
+        });
     });
 }
 
@@ -275,6 +322,7 @@ module.exports = {
     deleteUser: deleteUser,
     editUser: editUser,
     getUser: getUser,
+    doesUserExist: doesUserExist,
     incrementPostUpvotes: incrementPostUpvotes,
     decrementPostUpvotes: decrementPostUpvotes,
     incrementCommentUpvotes: incrementCommentUpvotes,
