@@ -143,8 +143,7 @@ function deleteUser(db, userId, callback) {
             return;
         }
 
-        removed.success = true;
-        callback(removed);
+        callback({ "success": true });
     });
 }
 

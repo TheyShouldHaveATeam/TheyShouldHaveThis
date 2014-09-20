@@ -69,7 +69,7 @@ MongoClient.connect((process.env.MONGOLAB_URI
     });
 
     app.get('/users/:id', function(req, res) {
-        var userId = req.params.id;
+        var userId = new ObjectID(req.params.id);
 
         dbUser.getUser(db, userId, function(user) {
             if(user.success) {
@@ -89,7 +89,7 @@ MongoClient.connect((process.env.MONGOLAB_URI
     });
 
     app.put('/users/:id', function(req, res) {
-        var userId = req.params.id;
+        var userId = new ObjectID(req.params.id);
         var loggedUserId = req.session.currentUser;
 
         if(loggedUserId != userId) {
@@ -111,7 +111,7 @@ MongoClient.connect((process.env.MONGOLAB_URI
     });
 
     app.delete('/users/:id', function(req, res) {
-        var userId = req.params.id;
+        var userId = new ObjectID(req.params.id);
         var loggedUserId = req.session.currentUser;
 
         if(loggedUserId !== userId) {
@@ -138,7 +138,63 @@ MongoClient.connect((process.env.MONGOLAB_URI
                 res.json(result, 400);
                 return;
             }
-            res.json(result, 200)
+            res.json(result, 200);
+        });
+    });
+
+    app.get('/posts/:id', function(req, res) {
+        var postId = new ObjectID(req.params.id);
+
+        dbPost.getPost(db, postId, function(result) {
+            if(result.success) {
+                res.json(result, 200);
+            } else {
+                res.json(result, 400);
+            }
+        });
+    });
+
+    app.delete('/posts/:id', function(req, res) {
+        var postId = new ObjectID(req.params.id);
+        var currentUser = new ObjectID(req.session.currentUser);
+
+        dbPost.getPost(db, postId, function(result) {
+            if(!result.success) {
+                res.json(result, 400);
+                return;
+            }
+
+            if(currentUser !== result.userId) {
+                res.json({
+                    "success": false,
+                    "error": "Unmatching userIds",
+                    "errorType": "authentication"
+                }, 400);
+                return;
+            }
+
+            dbPost.deletePost(db, postId, function(result) {
+                if(!result.success) {
+                    res.json(result, 400);
+                    return;
+                }
+                res.json(result, 200);
+            });
+        });
+    });
+
+    app.post('/posts', function(req, res) {
+        var userId = new ObjectID(req.session.currentUser);
+        var idea = req.params.idea;
+        var desc = req.params.desc;
+        var category = req.params.category;
+
+        dbPost.createPost(db, userId, idea, desc, category, function(result) {
+            if(result.success) {
+                res.json(result, 200);
+            } else {
+                res.json(result, 400);
+            }
         });
     });
 
