@@ -323,6 +323,7 @@ module.exports = {
     editUser: editUser,
     getUser: getUser,
     doesUserExist: doesUserExist,
+    authenticateUser: authenticateUser,
     incrementPostUpvotes: incrementPostUpvotes,
     decrementPostUpvotes: decrementPostUpvotes,
     incrementCommentUpvotes: incrementCommentUpvotes,
