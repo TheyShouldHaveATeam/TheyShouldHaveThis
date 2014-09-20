@@ -10,6 +10,7 @@ var stylus = require('stylus');
 
 var dbUser = require(__dirname + '/db/user.js');
 var dbPost = require(__dirname + '/db/post.js');
+var dbComment = require(__dirname + '/db/comment.js');
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
@@ -44,7 +45,7 @@ MongoClient.connect((process.env.MONGOLAB_URI
 
     app.get('/', function(req, res) {
         console.log('current user: ' + req.session.currentUser);
-        res.render('landing');
+        res.render('landing', {title: 'They Should Have This', currentUser: req.session.currentUser});
     });
 
     app.post('/users', function(req, res) {
@@ -68,7 +69,7 @@ MongoClient.connect((process.env.MONGOLAB_URI
         });
     });
 
-    app.get('/users/:id.format?', function(req, res) {
+    app.get('/users/:id.:format?', function(req, res) {
         var userId = new ObjectID(req.params.id);
 
         dbUser.getUser(db, userId, function(user) {
@@ -146,6 +147,35 @@ MongoClient.connect((process.env.MONGOLAB_URI
         });
     });
 
+    app.get('/posts/categories/:category.:format?', function(req, res) {
+        var category = req.params.category;
+
+        dbPost.getCategoryPosts(db, category, function(result) {
+            if(result.success !== undefined) {
+                res.json(result, 400);
+                return;
+            }
+            if(req.params.format === 'json') {
+                res.json(result, 200);
+            } else {
+                res.render('category', result);
+            }
+        });
+    });
+
+    app.get('/posts/user/:userId', function(req, res) {
+        var userId = new ObjectID(req.params.userId);
+
+        dbPost.getUserPosts(db, userId, function(result) {
+            if(result.success !== undefined) {
+                res.json(result, 400);
+                return;
+            }
+
+            res.json(result, 200);
+        });
+    });
+
     app.get('/posts/:id.:format?', function(req, res) {
         var postId = new ObjectID(req.params.id);
 
@@ -206,6 +236,109 @@ MongoClient.connect((process.env.MONGOLAB_URI
         });
     });
 
+    app.get('/posts/:id/comments', function(req, res) {
+        var postId = new ObjectID(req.params.id);
+
+        dbComment.getComments(db, postId, function(result) {
+            if(result.success !== undefined) {
+                res.json(result, 400);
+                return;
+            }
+
+            res.json(result, 200);
+        });
+    });
+
+    app.get('/posts/:id/comments/:commentId', function(req, res) {
+        var commentId = new ObjectID(req.params.commentId);
+
+        dbComment.getComment(db, commentId, function(result) {
+            if(result.success) {
+                res.json(result, 200);
+            } else {
+                res.json(result, 400);
+            }
+        });
+    });
+
+    app.post('/posts/:id/comments', function(req, res) {
+        var postId = new ObjectID(req.params.id);
+        var userId = new ObjetcID(req.session.currentUser);
+        var text = req.params.comment;
+        var type = req.params.type; // must be "theyHave", "canMake" or "comment"
+        if(type !== "theyHave" && type !== "canMake" && type !== "comment") {
+            res.json({
+                "success": false,
+                "error": "Invalid Comment Type",
+                "errorType": "invalidParameter"
+            }, 400);
+            return;
+        }
+
+        var href;
+        if(req.params.href === undefined || res.params.href === "") {
+            if(type === "comment") {
+                href = "";
+            } else {
+                res.json({
+                    "success": false,
+                    "error": "Href is required for \"They Have This\" and \"I Can Make This\" replies",
+                    "errorType": "invalidParameter"
+                }, 400);
+            }
+        } else {
+            href = req.params.href;
+        }
+
+        dbComment.createComment(db, userId, postId, text, type, href, function(result) {
+            if(result.success !== undefined) {
+                res.json(result, 400);
+                return;
+            }
+
+            res.json(result, 200);
+        });
+    });
+
+    app.delete('/posts/:id/comments/:commentId', function(req, res) {
+        var commentId = new ObjectID(req.params.id);
+        var currentUser = new ObjectID(req.session.currentUser);
+
+        dbComment.getComment(db, commentId, function(result) {
+            if(!result.success) {
+                res.json(result, 400);
+                return;
+            }
+
+            if(currentUser !== result.userId) {
+                res.json({
+                    "success": false,
+                    "error": "Unmatching userIds",
+                    "errorType": "authentication"
+                }, 400);
+                return;
+            }
+
+            dbComment.deleteComment(db, commentId, function(result) {
+                if(!result.success) {
+                    res.json(result, 400);
+                    return;
+                }
+                res.json(result, 200);
+            });
+        });
+    });
+
+
+
+    app.get('/posts/:id/votes', function(req, res) {
+
+    });
+
+    app.delete('/posts/:id/votes/:voteId', function(req, res) {
+
+    });
+
     app.post('/users/login', function(req, res) {
         dbUser.doesUserExist(db, req.body.email, function(userExists) {
             if(!userExists) {
@@ -232,7 +365,7 @@ MongoClient.connect((process.env.MONGOLAB_URI
     });
 
     app.post('/users/logout', function(req, res) {
-        req.session.userId = null;
+        req.session.currentUser = null;
         res.send(204);
     });
 

@@ -17,12 +17,12 @@ function getComment(db, commentId, callback) {
 
 function createComment(db, userId, postId, text, type, href, callback) {
     var comment = {
-        "userId" = userId,
-        "postId" = postId,
-        "text" = text,
-        "type" = type,
-        "href" = href,
-        "createdOn" = Date.now(),
+        "userId": userId,
+        "postId": postId,
+        "text": text,
+        "type": type,
+        "href": href,
+        "createdOn": Date.now(),
         "votes": {
             "upvotes": 0,
             "downvotes": 0
@@ -33,7 +33,7 @@ function createComment(db, userId, postId, text, type, href, callback) {
 
         if(err){
             callback( {
-                "success" =false,
+                "success": false,
                 "error": err,
                 "errorType": "database"
             });
