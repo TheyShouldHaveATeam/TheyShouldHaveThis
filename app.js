@@ -52,7 +52,13 @@ MongoClient.connect((process.env.MONGODB_CONNECT
 
         dbUser.createUser(db, username, email, password, function(response) {
             if(response.success) {
-                res.json(response, 201);
+                res.json({
+                    id: response._id,
+                    email: response.email,
+                    username: response.username,
+                    votes: response.votes,
+                    success: response.success
+                }, 201);
             } else {
                 res.json(response, 400);
             }
