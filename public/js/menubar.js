@@ -24,6 +24,7 @@ var MenuBar = React.createClass({
                 console.log('created user');
                 console.log(JSON.stringify(newUser, null, 4));
                 self.setState({currentUser: newUser});
+                self.closeAuthModal();
             },
             error: function(error) {
                 console.log('error creating user');
@@ -47,6 +48,7 @@ var MenuBar = React.createClass({
                 console.log('logged in as user');
                 console.log(JSON.stringify(loggedInUser, null, 4));
                 self.setState({currentUser: loggedInUser});
+                self.closeAuthModal();
             },
             error: function(error) {
                 console.log('error logging in as user');
@@ -70,16 +72,27 @@ var MenuBar = React.createClass({
         });
     },
 
+    openAuthModal: function() {
+        $('#auth-modal, #auth-modal-backdrop').show();
+    },
+    closeAuthModal: function() {
+        $('#auth-modal, #auth-modal-backdrop').hide();
+    },
+
     render: function() {
         var menuContent = [
-            <UserSignupModal key='signup' createUser={this.createUser} />,
-            <UserLoginModal key='login' loginAsUser={this.loginAsUser} />
+            <button type='button' className='login-signup' onClick={this.openAuthModal}>Signup/Login</button>,
+            <div id='auth-modal-backdrop' onClick={this.closeAuthModal}></div>,
+            <div id='auth-modal'>
+                <UserSignupModal key='signup' createUser={this.createUser} />
+                <UserLoginModal key='login' loginAsUser={this.loginAsUser} />
+            </div>
         ];
         console.log(this.state.currentUser);
         if(this.state.currentUser) {
             menuContent = [
                 <h3>Logged in as {this.state.currentUser.email}</h3>,
-                <button type='button' onClick={this.logout}>Log out</button>
+                <button type='button' className='logout' onClick={this.logout}>Log out</button>
             ];
         }
         return (
@@ -124,6 +137,7 @@ var UserSignupModal = React.createClass({
     render: function() {
         return (
             <form className='signup-form' onSubmit={this.handleFormSubmit}>
+                <h3>Signup</h3>
                 <label htmlFor='email'>Email</label>
                 <input type='email' name='email' value={this.state.email} onChange={this.handleEmailChange} />
                 <label htmlFor='username'>Username</label>
@@ -163,7 +177,8 @@ var UserLoginModal = React.createClass({
 
     render: function() {
         return (
-            <form className='signup-form' onSubmit={this.handleFormSubmit}>
+            <form className='login-form' onSubmit={this.handleFormSubmit}>
+                <h3>Login</h3>
                 <label htmlFor='email'>Email</label>
                 <input type='email' name='email' value={this.state.email} onChange={this.handleEmailChange} />
                 <label htmlFor='password'>Password</label>

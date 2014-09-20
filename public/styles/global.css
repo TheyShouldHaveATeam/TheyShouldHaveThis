@@ -19,10 +19,14 @@ form input {
 }
 .login-form,
 .signup-form {
-  border: 1px solid #000;
-  margin: 10px auto;
-  padding: 10px;
-  width: 200px;
+  position: absolute;
+  width: 50%;
+}
+.login-form {
+  right: 0;
+}
+.signup-form {
+  left: 0;
 }
 .icon {
   height: 20px;
@@ -33,4 +37,22 @@ form input {
 @font-face {
   font-family: 'Grandstander';
   src: url("/fonts/Grandstander-clean.ttf");
+}
+#auth-modal {
+  height: 300px;
+  position: absolute;
+  left: 100px;
+  right: 100px;
+  padding: 10px;
+  display: none;
+  background-color: #fff;
+}
+#auth-modal-backdrop {
+  background-color: rgba(0,0,0,0.8);
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: none;
 }
