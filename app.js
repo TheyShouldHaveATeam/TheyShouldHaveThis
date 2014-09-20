@@ -44,7 +44,7 @@ MongoClient.connect((process.env.MONGOLAB_URI
 
     app.get('/', function(req, res) {
         console.log('current user: ' + req.session.currentUser);
-        res.render('landing');
+        res.render('landing', {title: 'They Should Have This', currentUser: req.session.currentUser});
     });
 
     app.post('/users', function(req, res) {
@@ -68,7 +68,7 @@ MongoClient.connect((process.env.MONGOLAB_URI
         });
     });
 
-    app.get('/users/:id.format?', function(req, res) {
+    app.get('/users/:id.:format?', function(req, res) {
         var userId = new ObjectID(req.params.id);
 
         dbUser.getUser(db, userId, function(user) {

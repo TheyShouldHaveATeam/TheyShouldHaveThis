@@ -1,10 +1,27 @@
 /** @jsx React.DOM */
 
 var MenuBar = React.createClass({
+    componentWillMount: function() {
+        var self = this;
+        if(this.props.currentUserId) {
+            $.ajax({
+                type: 'GET',
+                url: '/users/' + self.props.currentUserId + '.json',
+                success: function(currentUser) {
+                    self.setState({currentUser: currentUser});
+                },
+                error: function(error) {
+                    console.log('error logging in');
+                    console.log(error);
+                }
+            });
+        }
+    },
+
     getInitialState: function() {
         return {
-            currentUser: this.props.currentUser || null
-        };
+            currentUser: null
+        }
     },
 
     createUser: function(user) {
@@ -189,7 +206,8 @@ var UserLoginModal = React.createClass({
     }
 });
 
+var currentUserId = $('#current-user').html();
 React.renderComponent(
-    <MenuBar loggedIn={false} />,
+    <MenuBar loggedIn={false} currentUserId={currentUserId} />,
     document.getElementById('menubar')
 );
