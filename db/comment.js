@@ -40,8 +40,23 @@ function createComment(db, userId, postId, text, type, href, callback) {
             return;
         }
 
-        inserted.success = true;
-        callback(inserted);
+        var commentTypePath = "comments$" + type;
+        var toUpdate = { "$inc": { } };
+        toUpdate["$inc"][commentTypePath] = 1;
+
+        db.collection('posts').update({ "_id": postId }, toUpdate, function(err, result) {
+            if(err) {
+                callback({
+                    "success": false,
+                    "error": err,
+                    "errorType": "database"
+                });
+                return;
+            }
+
+            inserted.success = true;
+            callback(inserted);
+        });
     })
 }
 
