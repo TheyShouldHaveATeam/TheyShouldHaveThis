@@ -58,10 +58,12 @@ function createUser(db, username, email, password, callback) {
                 if(err) {
                     callback({
                         "success": false,
-                        "error": err
+                        "error": err,
+                        "errorType": "database"
                         });
                 }
 
+                inserted.success = true;
                 callback(inserted);
             });
         });
@@ -73,10 +75,12 @@ function deleteUser(db, userId, callback) {
         if(err) {
             callback({
                 "success": false,
-                "error": err
+                "error": err,
+                "errorType": "database"
             });
         }
 
+        removed.success = true;
         callback(removed);
     });
 }
@@ -117,11 +121,28 @@ function editUser(db, userId, newCredentials, callback) {
         if(err) {
             callback({
                 "success": false,
-                "error": err
+                "error": err,
+                "errorType": "database"
             });
         }
 
+        updated.success = true;
         callback(updated);
+    });
+}
+
+function getUser(db, userId, callback) {
+    db.collection('users').find({_id: userId}, function(err, user) {
+        if(err) {
+            callback({
+                "success": false,
+                "error": err,
+                "errorType": "database"
+            });
+        }
+
+        user.success = true;
+        callback(user)
     });
 }
 
