@@ -14,6 +14,15 @@ app.use(bodyParser.json());
 
 app.listen(3000);
 
-app.get('/', function(req, res) {
-    res.render('index');
+MongoClient.connect((process.env.MONGODB_CONNECT
+        || "mongodb://localhost:27017/TSHTTest"), function(err, db) {
+    if(err) {
+        throw err;
+    }
+
+    app.get('/', function(req, res) {
+        res.render('index');
+    });
+
+    
 });
