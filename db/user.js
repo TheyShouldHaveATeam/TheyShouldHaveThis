@@ -40,7 +40,7 @@ function createUser(db, username, email, password, callback) {
     // }
 
     bcrypt.genSalt(10, function(err, salt) {
-        bcrypt.hash(password, salt, function(err, hash) {
+        bcrypt.hash(password, salt, null, function(err, hash) {
             var user = {
                 "username": username,
                 "password": password,
