@@ -129,7 +129,14 @@ MongoClient.connect((process.env.MONGOLAB_URI
 
     // post routes
     app.get('/posts', function(req, res) {
-        dbPost.getPosts(db, function(result) {
+        var pageNumber;
+        if(req.params.pageNumber) {
+            pageNumber = req.params.pageNumber
+        } else {
+            pageNumber = 0;
+        }
+
+        dbPost.getPosts(db, pageNumber, function(result) {
             if(result.success !== undefined) {
                 res.json(result, 400);
                 return;
@@ -140,8 +147,14 @@ MongoClient.connect((process.env.MONGOLAB_URI
 
     app.get('/posts/categories/:category.:format?', function(req, res) {
         var category = req.params.category;
+        var pageNumber;
+        if(req.params.pageNumber) {
+            pageNumber = req.params.pageNumber;
+        } else {
+            pageNumber = 0;
+        }
 
-        dbPost.getCategoryPosts(db, category, function(result) {
+        dbPost.getCategoryPosts(db, category, pageNumber, function(result) {
             if(result.success !== undefined) {
                 res.json(result, 400);
                 return;
@@ -156,8 +169,14 @@ MongoClient.connect((process.env.MONGOLAB_URI
 
     app.get('/posts/user/:userId', function(req, res) {
         var userId = new ObjectID(req.params.userId);
+        var pageNumber;
+        if(req.params.pageNumber) {
+            pageNumber = req.params.pageNumber;
+        } else {
+            pageNumber = 0;
+        }
 
-        dbPost.getUserPosts(db, userId, function(result) {
+        dbPost.getUserPosts(db, userId, pageNumber, function(result) {
             if(result.success !== undefined) {
                 res.json(result, 400);
                 return;
@@ -235,8 +254,14 @@ MongoClient.connect((process.env.MONGOLAB_URI
     // comment routes
     app.get('/posts/:id/comments', function(req, res) {
         var postId = new ObjectID(req.params.id);
+        var pageNumber;
+        if(req.params.pageNumber) {
+            pageNumber = req.params.pageNumber;
+        } else {
+            pageNumber = 0;
+        }
 
-        dbComment.getComments(db, postId, function(result) {
+        dbComment.getComments(db, postId, pageNumber, function(result) {
             if(result.success !== undefined) {
                 res.json(result, 400);
                 return;
