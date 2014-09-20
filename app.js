@@ -32,23 +32,12 @@ MongoClient.connect((process.env.MONGOLAB_URI
         throw err;
     }
 
-    // dbUser.createUser(db, "Aniruddha", "rapha@email.com", "myPassword", function(user) {
-    //     console.log(user);
-    // });
-
-    // dbUser.deleteUser(db, new ObjectID("541d188afaf939d4ef700a36"), function(success) {
-    //     console.log(success); // 1
-    // });
-    //
-    // dbUser.editUser(db, new ObjectID("541d188afaf939d4ef700a36"), {username: "hay", password: "bae", email: "hey@bae.com.br"}, function(success) {
-    //     console.log(success);
-    // });
-
     app.get('/', function(req, res) {
         console.log('current user: ' + req.session.currentUser);
         res.render('landing', {title: 'They Should Have This', currentUser: req.session.currentUser});
     });
 
+    // user routes
     app.post('/users', function(req, res) {
         var username = req.body.username;
         var email = req.body.email;
@@ -138,6 +127,7 @@ MongoClient.connect((process.env.MONGOLAB_URI
         });
     });
 
+    // post routes
     app.get('/posts', function(req, res) {
         dbPost.getPosts(db, function(result) {
             if(result.success !== undefined) {
@@ -242,6 +232,7 @@ MongoClient.connect((process.env.MONGOLAB_URI
         }
     });
 
+    // comment routes
     app.get('/posts/:id/comments', function(req, res) {
         var postId = new ObjectID(req.params.id);
 
@@ -335,6 +326,7 @@ MongoClient.connect((process.env.MONGOLAB_URI
         });
     });
 
+    // vote routes
     app.post('/posts/:id/vote', function(req, res) {
         var userId = new ObjectID(req.session.currentUser);
         var postId = new Object(req.params.id);
@@ -383,6 +375,7 @@ MongoClient.connect((process.env.MONGOLAB_URI
         });
     });
 
+    // authentication routes
     app.post('/users/login', function(req, res) {
         dbUser.doesUserExist(db, req.body.email, function(userExists) {
             if(!userExists) {
