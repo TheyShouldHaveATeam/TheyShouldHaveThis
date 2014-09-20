@@ -79,7 +79,7 @@ function getPosts(db, callback) {
     });
 }
 
-modules.exports = {
+module.exports = {
     getPost: getPost,
     createPost: createPost,
     deletePost: deletePost,

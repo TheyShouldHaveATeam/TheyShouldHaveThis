@@ -95,7 +95,7 @@ MongoClient.connect((process.env.MONGODB_CONNECT
         if(loggedUserId != userId) {
             res.json({
                 "success": false,
-                "error": "Unmatching userIds"
+                "error": "Unmatching userIds",
                 "errorType": "authentication"
             }, 400);
             return;
@@ -117,7 +117,7 @@ MongoClient.connect((process.env.MONGODB_CONNECT
         if(loggedUserId != userId) {
             res.json({
                 "success": false,
-                "error": "Unmatching userIds"
+                "error": "Unmatching userIds",
                 "errorType": "authentication"
             }, 400);
             return;
