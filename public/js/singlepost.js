@@ -262,26 +262,30 @@ var CommentForm = React.createClass({
         var href = [];
         if(this.props.type !== 'comment') {
             href = [
-                <label htmlFor='href'>Attached Link</label>,
-                <input type='text' name='href' value={this.state.href} onChange={this.handleHrefChange} />
+                <br/>,
+                <input type='text' id="link-text-form" placeholder="link (*)" name='href' value={this.state.href} onChange={this.handleHrefChange} />
             ];
         }
 
         var commentHeader = 'Comment';
+        var placeHolder = "new comment";
         if(this.props.type === 'theyHave') {
             commentHeader = '"They have this!"';
+            placeHolder = "Hey! They have this already. Check the link out.";
         }
         else if(this.props.type === 'canMake') {
             commentHeader = '"I can make this!"';
+            placeHolder = "Hey! I'm pretty sure this doesn't exist, but I can make it happen. To get updates on my development, follow the link.";
         }
         return (
-            <form className='comment-form' onSubmit={this.handleFormSubmit}>
+            <div>
                 <h3>{commentHeader}</h3>
-                <label htmlFor='text'>Body</label>
-                <textarea name='text' value={this.state.text} onChange={this.handleTextChange} rows='4'></textarea>
-                {href}
-                <input id="login-submit-button" type='submit' value='Post' />
-            </form>
+                <form className='comment-form' onSubmit={this.handleFormSubmit}>
+                    <textarea name='text' id="comment-textarea" placeholder={placeHolder} value={this.state.text} onChange={this.handleTextChange} rows='4'></textarea>
+                    <input id="comment-submit-button" type='submit' value='>' />
+                    {href}
+                </form>
+            </div>
         );
     }
 });

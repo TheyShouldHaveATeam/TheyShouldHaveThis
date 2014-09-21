@@ -177,9 +177,11 @@ form textarea {
   margin-top: 20px;
 }
 button,
-input {
+input,
+form textarea {
   background-color: #fff;
-  border-style: solid 1px;
+  border-style: solid;
+  border-width: 2px;
   border-color: #000;
   border-radius: 3px;
 }
@@ -478,4 +480,22 @@ h2 {
 .score {
   margin-top: 10px;
   margin-bottom: 10px;
+}
+.comment-form {
+  display: inline-block;
+}
+#comment-submit-button {
+  display: inline-block;
+  min-height: 40px;
+  vertical-align: top;
+  width: 40px;
+  border-radius: 20px;
+  margin-left: 5px;
+}
+#comment-textarea {
+  width: 447px;
+  display: inline-block;
+}
+#link-text-form {
+  display: inline-block;
 }
