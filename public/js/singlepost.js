@@ -125,19 +125,20 @@ var SinglePost = React.createClass( {
 
                 <div className='desc-panel'>
                     <span className="make-me-black"><p>{this.state.desc}</p></span>
-                    <br/>
 
                     <div className="desc-footer">
+                        <div className="username-wrapper-single">raphael</div>
                         <div className='comment-icons'>
                             <span className="comment-count-single">3</span>
                             &nbsp;<div onClick={this.selectCommentType} className={commentClass}></div>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;
                             <span className="comment-count-single">3</span>
                             &nbsp;<div onClick={this.selectTheyHaveType} className={theyHaveClass}></div>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;
                             <span className="comment-count-single">3</span>
                             &nbsp;<div onClick={this.selectCanMakeType} className={canMakeClass}></div>
                         </div>
+                        <div className="category-wrapper-single">{this.state.category}</div>
                     </div>
                 </div>
 
@@ -183,7 +184,7 @@ var CommentForm = React.createClass({
         var href = [];
         if(this.props.type !== 'comment') {
             href = [
-                <label htmlFor='href'>Link</label>,
+                <label htmlFor='href'>Attached Link</label>,
                 <input type='text' name='href' value={this.state.href} onChange={this.handleHrefChange} />
             ];
         }
@@ -206,7 +207,10 @@ var CommentList = React.createClass( {
         var self = this;
         this.props.comments.forEach(function(comment) {
             if(comment.type === self.props.type) {
-                comments.push(<CommentListItem text={comment.text} href={comment.href} />);
+                comments.push(<CommentListItem
+                    text={comment.text}
+                    href={comment.href}
+                    type={comment.type} />);
             }
         });
         return (
@@ -223,12 +227,27 @@ var CommentListItem = React.createClass({
     render: function() {
         var href = [];
         if(this.props.href) {
-            href = <a href={this.props.href}>Link</a>;
+            href =
+                <div className="link-wrapper-comment">
+                    <a href={this.props.href}>Attached Link</a>
+                </div>
+                ;
         }
+        commentClasses = "comment-entire " + this.props.type;
         return (
             <div className='comment-list-item'>
-                <p>{this.props.text}</p>
-                {href}
+                <div className={commentClasses}>
+                    <div className="comment-text">
+                        {this.props.text}
+                    </div>
+
+                    <div className="comment-footer">
+                        <div className="username-wrapper-comment">
+                            raphael
+                        </div>
+                        {href}
+                    </div>
+                </div>
             </div>
         );
 

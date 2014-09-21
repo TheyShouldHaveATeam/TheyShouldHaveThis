@@ -165,13 +165,13 @@ var PostListItem = React.createClass({
                             </div>
                             <div className="icons-wrapper">
                                 <span className="comment-count">3</span>
-                                &nbsp;<img className="little-icon comm" src="/images/comment_colored.png"/>
+                                &nbsp;<img className="little-icon comm" src="/images/comment_bw.png"/>
                                 &nbsp;&nbsp;&nbsp;
                                 <span className="comment-count">3</span>
-                                &nbsp;<img className="little-icon check" src="/images/checkmark_colored.png"/>
+                                &nbsp;<img className="little-icon check" src="/images/checkmark_bw.png"/>
                                 &nbsp;&nbsp;&nbsp;
                                 <span className="comment-count">3</span>
-                                &nbsp;<img className="little-icon excla" src="/images/exclamation_colored.png"/>
+                                &nbsp;<img className="little-icon excla" src="/images/exclamation_bw.png"/>
                             </div>
                             <div className="category-wrapper">
                                 {this.props.category}
