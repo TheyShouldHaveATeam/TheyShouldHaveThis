@@ -10,7 +10,9 @@ var SinglePost = React.createClass( {
             upvotes:0,
             downvotes:0,
             comments: [],
-            commentFeed: 'comment'
+            commentFeed: 'comment',
+            upvoted: false,
+            downvoted: false
         };
     },
 
@@ -35,20 +37,7 @@ var SinglePost = React.createClass( {
                 console.log(error);
             },
 
-            success: function(vote) {
-                if(vote.typeOfVote === 'upvote') {
-                    self.setState({
-                        upvoted: true,
-                        downvoted: false
-                    });
-                }
-                else if(vote.typeOfVote === 'downvote') {
-                    self.setState({
-                        upvoted: false,
-                        downvoted: true
-                    });
-                }
-            },
+
 
             error: function(err) {
                 console.log('error getting posts');
@@ -110,6 +99,7 @@ var SinglePost = React.createClass( {
     },
 
     toggleUpvote: function(e) {
+
         console.log("up!");
         if(!this.state.upvoted) {
             this.setState({
@@ -125,7 +115,7 @@ var SinglePost = React.createClass( {
         }
         $.ajax({
             type: 'POST',
-            url: '/posts/'+this.props.postId+'.json',
+            url: '/posts/'+this.props.postId+'/vote',
             data: {
                 typeOfVote: 'upvote'
             },
@@ -156,7 +146,7 @@ var SinglePost = React.createClass( {
         }
         $.ajax({
             type: 'POST',
-            url: '/posts/'+this.props.postId+'.json',
+            url: '/posts/'+this.props.postId+'/vote',
             data: {
                 typeOfVote: 'downvote'
             },
@@ -202,9 +192,9 @@ var SinglePost = React.createClass( {
                     <h1><div className="give-me-padding">{this.state.idea}</div></h1>
 
                     <div className={votesClass}>
-                        <div className='upvote'></div>
+                        <div className='upvote' onClick = {this.toggleUpvote}></div>
                         <div className='score'>{currentScore}</div>
-                        <div className='downvote'></div>
+                        <div className='downvote' onClick = {this.toggleDownvote}></div>
                     </div>
                 </div>
 
