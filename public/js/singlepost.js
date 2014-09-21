@@ -329,10 +329,10 @@ var CommentListItem = React.createClass({
                 </div>
                 ;
         }
-        commentClasses = "comment-entire " + this.props.type;
+        commentClasses = "comment-list-item " + this.props.type;
         return (
-            <div className='comment-list-item'>
-                <div className={commentClasses}>
+            <div className={commentClasses}>
+                <div className="comment-entire">
                     <div className="comment-text">
                         {this.props.text}
                     </div>

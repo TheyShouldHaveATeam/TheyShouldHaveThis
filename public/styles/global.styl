@@ -96,7 +96,7 @@ form input, form textarea
     border-radius 8px 8px 0px 0px
     margin-bottom 0px
 .votes
-    top 25px
+    top 15px
     left 15px
     position absolute
     &.upvoted
@@ -377,12 +377,24 @@ h2
     color white
     border-radius 8px
     position relative
-.comment
-    background-color #b2ddfe
-.canMake
-    background-color #fdd889
-.theyHave
-        background-color #a3d39c
+.comment-list-item.comment:nth-child(odd) .comment-entire {
+    background-color: #7CDEBD;
+}
+.comment-list-item.comment:nth-child(even) .comment-entire {
+    background-color: #57A3DE;
+}
+.comment-list-item.canMake:nth-child(odd) .comment-entire {
+    background-color: #F2BF52;
+}
+.comment-list-item.canMake:nth-child(even) .comment-entire {
+    background-color: #D69311;
+}
+.comment-list-item.theyHave:nth-child(odd) .comment-entire {
+    background-color: #84D193;
+}
+.comment-list-item.theyHave:nth-child(even) .comment-entire {
+    background-color: #47A340;
+}
 .comment-text
     width calc(100% - 16px)
     font-size 22px
@@ -395,3 +407,6 @@ h2
 .error
     color white
     background-color red
+.score
+    margin-top 10px
+    margin-bottom 10px
