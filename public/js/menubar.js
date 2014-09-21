@@ -101,16 +101,18 @@ var MenuBar = React.createClass({
             <div id='login-wrapper'>
                 <div id="log-elements-wrapper">
                     <div id="elements-wrapper">
-                        <button type='button' className='login-signup' onClick={this.openAuthModal}>Signup/Login</button>
-                        <div id='auth-modal-backdrop' onClick={this.closeAuthModal}></div>
-                        <div id='auth-modal'>
-                            <div id='logo-auth-modal'>
-                                <img id='logo-auth-modal-img' src="/images/loading.gif" />
-                                <h5 id="auth-desc">TheyShouldHaveThis is all about connecting those who have ideas with those who have the skills to make these ideas become reality.<br/>Post an idea, find out if 'They Have This' already, or if someone is interested in creating it.</h5>
+                        <span id="align-center">
+                            <button type='button' className='login-signup' onClick={this.openAuthModal}>Signup/Login</button>
+                            <div id='auth-modal-backdrop' onClick={this.closeAuthModal}></div>
+                            <div id='auth-modal'>
+                                <div id='logo-auth-modal'>
+                                    <img id='logo-auth-modal-img' src="/images/loading.gif" />
+                                    <h5 id="auth-desc">TheyShouldHaveThis is all about connecting those who have ideas with those who have the skills to make these ideas become reality.<br/>Post an idea, find out if 'They Have This' already, or if someone is interested in creating it.</h5>
+                                </div>
+                                <UserSignupModal key='signup' createUser={this.createUser} />
+                                <UserLoginModal key='login' loginAsUser={this.loginAsUser} />
                             </div>
-                            <UserSignupModal key='signup' createUser={this.createUser} />
-                            <UserLoginModal key='login' loginAsUser={this.loginAsUser} />
-                        </div>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -121,8 +123,10 @@ var MenuBar = React.createClass({
                 <div id='loggedin-wrapper'>
                     <div id="log-elements-wrapper">
                         <div id="elements-wrapper">
-                            <span id="logged-in-as">Logged in as {this.state.currentUser.email}</span>&nbsp;
-                            <button type='button' className='logout' onClick={this.logout}>Log out</button>
+                            <span id="align-center">
+                                <span id="logged-in-as">Logged in as {this.state.currentUser.email}</span>&nbsp;
+                                <button type='button' className='logout' onClick={this.logout}>Log out</button>
+                            </span>
                         </div>
                     </div>
                 </div>
