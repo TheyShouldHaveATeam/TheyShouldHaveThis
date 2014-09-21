@@ -21,8 +21,6 @@ var SinglePost = React.createClass( {
     },
 
     componentWillMount: function() {
-        var self = this;
-
         this.updatePostData();
         this.getPostComments();
     },
@@ -69,6 +67,18 @@ var SinglePost = React.createClass( {
                     theyHaveCount: post.theyHave,
                     canMakeCount: post.canMake
                 });
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/users/'+post.userId+'.json',
+                    success: function(user) {
+                        self.setState({username:user.username});
+                    },
+                    error: function(error) {
+                        console.log('error getting username');
+                        console.log(error);
+                    }
+                });
             },
             error: function(error) {
                 console.log('error getting post');
@@ -85,7 +95,7 @@ var SinglePost = React.createClass( {
             url: '/posts/'+this.props.postId+'/comments',
             data: {
                 comment: comment.text,
-                href: comment.href,
+                href: comment.href.replace("http://" , ""),
                 type: comment.type
             },
             success: function(newComment) {
@@ -206,7 +216,7 @@ var SinglePost = React.createClass( {
                     <span className="make-me-black"><p>{this.state.desc}</p></span>
 
                     <div className="desc-footer">
-                        <div className="username-wrapper-single">raphael</div>
+                        <div className="username-wrapper-single">{this.state.username}</div>
                         <div className='comment-icons'>
                             <span className="comment-count-single">{this.state.commentCount}</span>
                             &nbsp;<div onClick={this.selectCommentType} className={commentClass}></div>
@@ -297,6 +307,7 @@ var CommentList = React.createClass( {
         var self = this;
         this.props.comments.forEach(function(comment) {
             if(comment.type === self.props.type) {
+
                 comments.push(<CommentListItem
                     text={comment.text}
                     href={comment.href}
@@ -315,11 +326,12 @@ var CommentList = React.createClass( {
 var CommentListItem = React.createClass({
 
     render: function() {
-        var href = [];
+
         if(this.props.href) {
-            href =
+            var href = 'http://'+this.props.href;
+            hrefTwo =
                 <div className="link-wrapper-comment">
-                    <a href={this.props.href}>Attached Link</a>
+                    <a href={href}>Attached Link</a>
                 </div>
                 ;
         }
@@ -335,7 +347,7 @@ var CommentListItem = React.createClass({
                         <div className="username-wrapper-comment">
                             raphael
                         </div>
-                        {href}
+                        {hrefTwo}
                     </div>
                 </div>
             </div>

@@ -34,7 +34,7 @@ var PostList = React.createClass( {
                 postId={post._id}
                 title={post.idea}
                 score={post.upvotes-post.downvotes}
-                userId={self.props.userId}
+                userId={post.userId}
                 desc={post.desc}
                 category={post.category}
                 commentCount={post.comment}
@@ -75,6 +75,18 @@ var PostListItem = React.createClass({
             },
             error: function(error) {
                 console.log('error getting posts');
+                console.log(error);
+            }
+        });
+
+        $.ajax({
+            type: 'GET',
+            url: '/users/'+this.props.userId+'.json',
+            success: function(user) {
+                self.setState({username:user.username});
+            },
+            error: function(error) {
+                console.log('error getting username');
                 console.log(error);
             }
         });
@@ -177,9 +189,7 @@ var PostListItem = React.createClass({
                         <a href={"/posts/"+this.props.postId}>
                             <h2>{this.props.title}</h2>
                             <span className="idea-desc">{this.props.desc}</span>
-                            <div className="username-wrapper">
-                                raphael
-                            </div>
+                            <div className="username-wrapper">{this.state.username}</div>
                             <div className="icons-wrapper">
                                 <span className="comment-count">{this.props.commentCount}</span>
                                 &nbsp;<img className="little-icon comm" src="/images/comment_colored.png"/>
