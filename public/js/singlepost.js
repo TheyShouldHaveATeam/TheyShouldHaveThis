@@ -87,7 +87,7 @@ var SinglePost = React.createClass( {
             url: '/posts/'+this.props.postId+'/comments',
             data: {
                 comment: comment.text,
-                href: comment.href,
+                href: comment.href.replace("http://" , ""),
                 type: comment.type
             },
             success: function(newComment) {
@@ -294,6 +294,7 @@ var CommentList = React.createClass( {
         var self = this;
         this.props.comments.forEach(function(comment) {
             if(comment.type === self.props.type) {
+
                 comments.push(<CommentListItem text={comment.text} href={comment.href} />);
             }
         });
@@ -309,14 +310,11 @@ var CommentList = React.createClass( {
 var CommentListItem = React.createClass({
 
     render: function() {
-        var href = [];
-        if(this.props.href) {
-            href = <a href={this.props.href}>Link</a>;
-        }
+        var href = 'http://'+this.props.href;
         return (
             <div className='comment-list-item'>
                 <p>{this.props.text}</p>
-                {href}
+                <a href={href}>Link</a>
             </div>
         );
 
