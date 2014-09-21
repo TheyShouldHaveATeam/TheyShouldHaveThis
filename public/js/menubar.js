@@ -99,15 +99,21 @@ var MenuBar = React.createClass({
     render: function() {
         var menuContent = [
             <div id='login-wrapper'>
-                <button type='button' className='login-signup' onClick={this.openAuthModal}>Signup/Login</button>
-                <div id='auth-modal-backdrop' onClick={this.closeAuthModal}></div>
-                <div id='auth-modal'>
-                    <div id='logo-auth-modal'>
-                        <img id='logo-auth-modal-img' src="/images/logo_bw.jpg" />
-                        <h5 id="auth-desc">TheyShouldHaveThis is all about connecting those who have ideas with those who have the skills to make these ideas become reality.<br/>Post an idea, find out if 'They Have This' already, or if someone is interested in creating it.</h5>
+                <div id="log-elements-wrapper">
+                    <div id="elements-wrapper">
+                        <span id="align-center">
+                            <button type='button' className='login-signup' onClick={this.openAuthModal}>Login/Register</button>
+                            <div id='auth-modal-backdrop' onClick={this.closeAuthModal}></div>
+                            <div id='auth-modal'>
+                                <div id='logo-auth-modal'>
+                                    <img id='logo-auth-modal-img' src="/images/loading.gif" />
+                                    <h5 id="auth-desc">TheyShouldHaveThis is all about connecting those who have ideas with those who have the skills to make these ideas become reality.<br/>Post an idea, find out if 'They Have This' already, or if someone is interested in creating it.</h5>
+                                </div>
+                                <UserSignupModal key='signup' createUser={this.createUser} />
+                                <UserLoginModal key='login' loginAsUser={this.loginAsUser} />
+                            </div>
+                        </span>
                     </div>
-                    <UserSignupModal key='signup' createUser={this.createUser} />
-                    <UserLoginModal key='login' loginAsUser={this.loginAsUser} />
                 </div>
             </div>
         ];
@@ -115,8 +121,14 @@ var MenuBar = React.createClass({
         if(this.state.currentUser) {
             menuContent = [
                 <div id='loggedin-wrapper'>
-                    <h3>Logged in as {this.state.currentUser.email}</h3>,
-                    <button type='button' className='logout' onClick={this.logout}>Log out</button>
+                    <div id="log-elements-wrapper">
+                        <div id="elements-wrapper">
+                            <span id="align-center">
+                                <span id="logged-in-as">Logged in as {this.state.currentUser.email}</span>&nbsp;
+                                <button type='button' className='logout' onClick={this.logout}>Log out</button>
+                            </span>
+                        </div>
+                    </div>
                 </div>
             ];
         }
@@ -165,14 +177,14 @@ var UserSignupModal = React.createClass({
     render: function() {
         return (
             <form className='signup-form' onSubmit={this.handleFormSubmit}>
-                <h3>Signup</h3>
+                <h3>Sign Up</h3>
                 <label htmlFor='email'>Email</label>
                 <input type='email' name='email' value={this.state.email} onChange={this.handleEmailChange} />
                 <label htmlFor='username'>Username</label>
                 <input tynodepe='text' name='username' value={this.state.username} onChange={this.handleUsernameChange} />
                 <label htmlFor='password'>Password</label>
                 <input type='password' name='password' value={this.state.password} onChange={this.handlePasswordChange} />
-                <input id="signup-submit-button" type='submit' value='Sign up!' />
+                <input id="signup-submit-button" type='submit' value='Sign Up!' />
             </form>
         );
     }

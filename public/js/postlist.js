@@ -29,7 +29,7 @@ var PostList = React.createClass( {
         var posts = [];
         var self = this;
         this.state.posts.forEach(function(post) {
-            posts.push(<PostListItem postId={post._id} title={post.idea} score={post.upvotes-post.downvotes} userId={self.props.userId} />);
+            posts.push(<PostListItem postId={post._id} title={post.idea} score={post.upvotes-post.downvotes} userId={self.props.userId} desc={post.desc} />);
         });
         return (
             <div className = "postlist">
@@ -154,9 +154,28 @@ var PostListItem = React.createClass({
                     <div className='score'>{currentScore}</div>
                     <div className='downvote' onClick={this.toggleDownvote}></div>
                 </div>
-                <a href={"/posts/"+this.props.postId}>
-                    <h2>{this.props.title}</h2>
-                </a>
+                <div className="idea-wrapper">
+                    <div className="invisible-spacer"></div>
+                    <div className="display-inline-block idea-wrapper-wrapper">
+                        <a href={"/posts/"+this.props.postId}>
+                            <h2>{this.props.title}</h2>
+                            <span className="idea-desc">{this.props.desc}</span>
+                            <div className="username-wrapper">
+                                raphael
+                            </div>
+                            <div className="icons-wrapper">
+                                <span className="comment-count">3</span>
+                                &nbsp;<img className="little-icon comm" src="/images/comment_colored.png"/>
+                                &nbsp;&nbsp;&nbsp;
+                                <span className="comment-count">3</span>
+                                &nbsp;<img className="little-icon check" src="/images/checkmark_colored.png"/>
+                                &nbsp;&nbsp;&nbsp;
+                                <span className="comment-count">3</span>
+                                &nbsp;<img className="little-icon excla" src="/images/exclamation_colored.png"/>
+                            </div>
+                        </a>
+                    </div>
+                </div>
             </div>
         );
 

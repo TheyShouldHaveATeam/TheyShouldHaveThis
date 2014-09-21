@@ -65,25 +65,33 @@ form input, form textarea
     text-decoration none
     color black
     width 500px
-    height 100px
+    min-height 100px
     display block
     background linear-gradient(30deg, #05aa8b, #9bddd0);
     margin 10px auto
     z-index 0
+    border-style solid
+    border-width 2px
+    border-radius 8px
+    color white
 .single-post
     padding-top 5px
     position relative
     text-decoration none
     color black
     width 500px
-    height 100px
+    min-height 100px
     display block
     background linear-gradient(30deg, #05aa8b, #9bddd0);
     margin 10px auto
     z-index 0
+    border-style solid
+    border-width 2px 2px 1px 2px
+    border-radius 8px 8px 0px 0px
+    margin-bottom 0px
 .votes
-    top 20px
-    left 5px
+    top 25px
+    left 15px
     position absolute
     &.upvoted
         .upvote
@@ -98,8 +106,27 @@ form input, form textarea
     .upvote, .downvote
         background-size contain
         background-repeat no-repeat
-        width 50px
-        height 25px
+        width 30px
+        height 15px
+
+.desc-panel
+    margin-bottom 10px
+    margin-top 0px
+    margin-left auto
+    margin-right auto
+    position relative
+    width 500px
+    background-color rgb(255, 255, 255)
+    border-style solid
+    border-width 1px 2px 2px 2px
+    border-radius 0px 0px 8px 8px
+
+.give-me-padding
+    padding 7px
+    height 20px
+    margin-bottom 0
+    margin-left 15px
+
 #logo-auth-modal
     text-align center
     font-family 'Lato-Regular'
@@ -119,9 +146,8 @@ button, input
 #signup-submit-button, #login-submit-button
     width 157px
     height 50px
-h5#auth-desc
-    margin-bottom 10px
-    margin-top 20px
+
+
 form#post-idea
     display inline-block
 input#main-input
@@ -159,10 +185,10 @@ img#main-logo
     width 50px
     display inline-block
     vertical-align bottom
+
 a
     text-decoration none
     color black
-
 .comment-icons
     div
         width 50px
@@ -181,3 +207,71 @@ a
         background-image url('/images/exclamation_bw.png')
         &.selected
             background-image url('/images/exclamation_colored.png')
+#logged-in-as
+    font-size 18px
+#login-wrapper, #loggedin-wrapper
+    width 100%
+#log-elements-wrapper
+    width 800px
+    margin-left auto
+    margin-right auto
+#elements-wrapper
+    text-align right
+#align-center
+    text-align center
+.idea-wrapper
+    text-align left
+    padding-top 0
+    padding-bottom 0
+.invisible-spacer
+    display inline-block
+    width 54px
+    height 92px
+.display-inline-block
+    display inline-block
+.idea-wrapper-wrapper
+    vertical-align top
+    padding-top 5px
+    padding-left 5px
+    width 420px
+    overflow hidden
+h2
+    margin-top 0
+    margin-bottom 0
+.idea-desc
+    font-size 18px
+.icons-wrapper
+    background-color rgba(255, 255, 255, 0.6)
+    border-radius 4px 4px 0px 0px
+    position absolute
+    bottom 0
+    right 0
+    z-index 1.5
+    margin-right 8px
+    height 22px
+    padding 5px
+.little-icon
+    &.comm
+        width 22px
+    &.check
+        width 22px
+    &.excla
+        width 12px
+.comment-count
+    font-family 'Grandstander'
+    font-size 17px
+    color white
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
+.username-wrapper
+    position absolute
+    bottom 0
+    z-index 1.5
+    height 22px
+    padding 5px
+    padding-left 0px
+    font-family 'Grandstander'
+    font-size 17px
+    color white
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
