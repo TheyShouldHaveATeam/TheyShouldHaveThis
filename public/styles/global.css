@@ -390,3 +390,7 @@ h2 {
   text-align: center;
   width: 100%;
 }
+.error {
+  color: #fff;
+  background-color: #f00;
+}

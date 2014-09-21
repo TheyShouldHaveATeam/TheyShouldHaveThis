@@ -48,6 +48,8 @@ var MenuBar = React.createClass({
             error: function(error) {
                 console.log('error creating user');
                 console.log(error);
+                var errorMessage = JSON.parse(error.responseText).error;
+                self.setState({signupError: errorMessage});
             }
         });
     },
@@ -73,6 +75,8 @@ var MenuBar = React.createClass({
             error: function(error) {
                 console.log('error logging in as user');
                 console.log(error);
+                var errorMessage = JSON.parse(error.responseText).error;
+                self.setState({loginError: errorMessage});
             }
         });
     },
@@ -101,6 +105,8 @@ var MenuBar = React.createClass({
     },
 
     render: function() {
+        console.log(this.state.loginError);
+        console.log(this.state.signupError);
         var menuContent = [
             <div id='login-wrapper'>
                 <div id="log-elements-wrapper">
@@ -113,8 +119,8 @@ var MenuBar = React.createClass({
                                     <img id='logo-auth-modal-img' src="/images/loading.gif" />
                                     <h5 id="auth-desc">TheyShouldHaveThis is all about connecting those who have ideas with those who have the skills to make these ideas become reality.<br/>Post an idea, find out if 'They Have This' already, or if someone is interested in creating it.</h5>
                                 </div>
-                                <UserSignupModal key='signup' createUser={this.createUser} />
-                                <UserLoginModal key='login' loginAsUser={this.loginAsUser} />
+                                <UserSignupModal key='signup' createUser={this.createUser} error={this.state.signupError} />
+                                <UserLoginModal key='login' loginAsUser={this.loginAsUser} error={this.state.loginError} />
                             </div>
                         </span>
                     </div>
@@ -155,8 +161,6 @@ var UserSignupModal = React.createClass({
     },
 
     handleEmailChange: function() {
-        console.log("email change");
-        console.log(this.state.email);
         this.setState({email: event.target.value});
     },
 
@@ -183,6 +187,7 @@ var UserSignupModal = React.createClass({
         return (
             <form className='signup-form' onSubmit={this.handleFormSubmit}>
                 <h3>Sign Up</h3>
+                <p className='error'>{this.props.error}</p>
                 <label htmlFor='email'>Email</label>
                 <input type='email' name='email' value={this.state.email} onChange={this.handleEmailChange} />
                 <label htmlFor='username'>Username</label>
@@ -224,6 +229,7 @@ var UserLoginModal = React.createClass({
         return (
             <form className='login-form' onSubmit={this.handleFormSubmit}>
                 <h3>Login</h3>
+                <p className='error'>{this.props.error}</p>
                 <label htmlFor='email'>Email</label>
                 <input type='email' name='email' value={this.state.email} onChange={this.handleEmailChange} />
                 <label htmlFor='password'>Password</label>
