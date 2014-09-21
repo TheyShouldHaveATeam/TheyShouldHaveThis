@@ -50,7 +50,7 @@ var SinglePost = React.createClass( {
         }
         return (
             <div>
-                <div className='single-post'>
+                <div className='single-post make-me-white'>
                     <h1><div className="give-me-padding">{this.state.idea}</div></h1>
 
                     <div className={votesClass}>
@@ -62,7 +62,7 @@ var SinglePost = React.createClass( {
                 </div>
 
                 <div className='desc-panel'>
-                    <p>{this.state.desc}</p>
+                    <span className="make-me-black"><p>{this.state.desc}</p></span>
                 </div>
 
             </div>
