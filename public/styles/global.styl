@@ -128,6 +128,7 @@ form input, form textarea
     border-radius: 0px 0px 8px 8px;
     border-color: white grey grey;
     position relative
+    font-size 22px
 
 .give-me-padding
     padding 7px
@@ -204,7 +205,8 @@ a
     display inline-block
     background-color rgb(220, 220, 220)
     border-radius 5px 5px 0px 0px
-    padding 8px
+    padding 10px
+    padding-bottom 0px
     margin-left auto
     margin-right auto
 
@@ -313,11 +315,31 @@ h2
     font-family 'Grandstander'
     font-size 12px
     color white
+.username-wrapper-comment
+    position absolute
+    bottom 0
+    z-index 1.5
+    height 22px
+    padding-top 15px
+    padding-left 10px
+    font-family 'Grandstander'
+    font-size 12px
+    color white
+.username-wrapper-single
+    position absolute
+    bottom 0
+    z-index 1.5
+    height 22px
+    padding-top 15px
+    padding-left 0px
+    font-family 'Grandstander'
+    font-size 14px
+    margin-left 10px
 .make-me-black
     color black
 .make-me-white
     color white
-.category-wrapper
+.category-wrapper, .link-wrapper-comment
     position absolute
     bottom 0
     right 0
@@ -329,10 +351,47 @@ h2
     font-size 12px
     color white
     margin-right 10px
+.category-wrapper-single
+    position absolute
+    bottom 0
+    right 0
+    z-index 1.5
+    height 22px
+    padding-top 15px
+    padding-left 0px
+    font-family 'Grandstander'
+    font-size 14px
+    margin-right 10px
 .desc-footer
     position relative
     text-align center
     width 100%
+.comment-text
+    width 100%
+.comment-entire
+    width 500px
+    margin-left auto
+    margin-right auto
+    border-style solid
+    border-width 2px
+    color white
+    border-radius 8px
+    position relative
+.comment
+    background-color #b2ddfe
+.canMake
+    background-color #fdd889
+.theyHave
+        background-color #a3d39c
+.comment-text
+    width calc(100% - 16px)
+    font-size 22px
+    margin 8px
+    text-align left
+    min-height 30px
+.comment-footer
+    width 100%
+    display inline-block
 .error
     color white
     background-color red
