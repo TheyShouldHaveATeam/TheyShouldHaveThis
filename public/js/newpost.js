@@ -78,14 +78,14 @@ var NewPost = React.createClass({
                         <input type='submit' />
                     </form>
                 </h1>
-                <div id='new-post-modal-backdrop' onClick={this.closeNewPostModal}></div>,
+                <div id='new-post-modal-backdrop' onClick={this.closeNewPostModal}></div>
                 <div id='new-post-modal'>
                     <form className='new-post-form' onSubmit={this.handleFormSubmit}>
                         <h3>New post</h3>
                         <label htmlFor='title'>Title</label>
                         <input type='text' name='title' value={this.state.title} onChange={this.handleTitleChange} />
                         <label htmlFor='description'>Description</label>
-                        <textarea rows='4' onChange={this.handleDescriptionChange} placeholder='Description'>{this.state.description}</textarea>
+                        <textarea rows='4' onChange={this.handleDescriptionChange} placeholder='Description' value={this.state.description}></textarea>
                         <label htmlFor='category'>Category</label>
                         <input type='text' name='category' value={this.state.category} onChange={this.handleCategoryChange} />
                         <input type='submit' />
