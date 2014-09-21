@@ -311,7 +311,9 @@ var CommentList = React.createClass( {
                 comments.push(<CommentListItem
                     text={comment.text}
                     href={comment.href}
-                    type={comment.type} />);
+                    type={comment.type}
+                    userId={comment.userId}
+                />);
             }
         });
         return (
@@ -324,9 +326,30 @@ var CommentList = React.createClass( {
 });
 
 var CommentListItem = React.createClass({
+    getInitialState: function() {
+        return {
+            username: ''
+        };
+    },
+
+    componentWillMount: function() {
+        var self = this;
+
+        $.ajax({
+            type: 'GET',
+            url: '/users/'+this.props.userId+'.json',
+            success: function(user) {
+                self.setState({username:user.username});
+            },
+            error: function(error) {
+                console.log('error getting username');
+                console.log(error);
+            }
+        });
+    },
 
     render: function() {
-
+        var hrefTwo = [];
         if(this.props.href) {
             var href = 'http://'+this.props.href;
             hrefTwo =
@@ -344,9 +367,7 @@ var CommentListItem = React.createClass({
                     </div>
 
                     <div className="comment-footer">
-                        <div className="username-wrapper-comment">
-                            raphael
-                        </div>
+                        <div className="username-wrapper-comment">{this.state.username}</div>
                         {hrefTwo}
                     </div>
                 </div>
