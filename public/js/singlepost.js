@@ -9,43 +9,21 @@ var SinglePost = React.createClass( {
             createdOn: 0,
             upvotes:0,
             downvotes:0,
-            comments: [],
             commentFeed: 'comment',
+            comments: [],
             upvoted: false,
-            downvoted: false
+            downvoted: false,
+            commentCount: 0,
+            theyHaveCount: 0,
+            canMakeCount: 0
+
         };
     },
 
     componentWillMount: function() {
         var self = this;
 
-        $.ajax({
-            type: 'GET',
-            url: '/posts/'+this.props.postId+'.json',
-            success: function(post) {
-                console.log(post);
-                self.setState({
-                    idea: post.idea,
-                    desc: post.desc,
-                    category: post.category,
-                    createdOn: post.createdOn,
-                    score: post.upvotes - post.downvotes
-                });
-            },
-            error: function(error) {
-                console.log('error getting post');
-                console.log(error);
-            },
-
-
-
-            error: function(err) {
-                console.log('error getting posts');
-                console.log(error);
-            }
-
-    });
-
+        this.updatePostData();
         this.getPostComments();
     },
 
@@ -74,6 +52,32 @@ var SinglePost = React.createClass( {
         });
     },
 
+    updatePostData: function() {
+        var self = this;
+
+        $.ajax({
+            type: 'GET',
+            url: '/posts/'+this.props.postId+'.json',
+            success: function(post) {
+                console.log(post);
+                self.setState({
+                    idea: post.idea,
+                    desc: post.desc,
+                    category: post.category,
+                    createdOn: post.createdOn,
+                    score: post.upvotes - post.downvotes,
+                    commentCount: post.comment,
+                    theyHaveCount: post.theyHave,
+                    canMakeCount: post.canMake
+                });
+            },
+            error: function(error) {
+                console.log('error getting post');
+                console.log(error);
+            }
+        });
+    },
+
     createComment: function(comment) {
         var self = this;
 
@@ -90,6 +94,7 @@ var SinglePost = React.createClass( {
                 console.log('created comment');
                 console.log(JSON.stringify(newComment, null, 4));
                 self.getPostComments();
+                self.updatePostData();
             },
             error: function(error) {
                 console.log('error creating comment');
@@ -204,13 +209,13 @@ var SinglePost = React.createClass( {
 
                     <div className="desc-footer">
                         <div className='comment-icons'>
-                            <span className="comment-count-single">3</span>
+                            <span className="comment-count-single">{this.state.commentCount}</span>
                             &nbsp;<div onClick={this.selectCommentType} className={commentClass}></div>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <span className="comment-count-single">3</span>
+                            <span className="comment-count-single">{this.state.theyHaveCount}</span>
                             &nbsp;<div onClick={this.selectTheyHaveType} className={theyHaveClass}></div>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <span className="comment-count-single">3</span>
+                            <span className="comment-count-single">{this.state.canMakeCount}</span>
                             &nbsp;<div onClick={this.selectCanMakeType} className={canMakeClass}></div>
                         </div>
                     </div>
@@ -262,9 +267,17 @@ var CommentForm = React.createClass({
                 <input type='text' name='href' value={this.state.href} onChange={this.handleHrefChange} />
             ];
         }
+
+        var commentHeader = 'Comment';
+        if(this.props.type === 'theyHave') {
+            commentHeader = '"They have this!"';
+        }
+        else if(this.props.type === 'canMake') {
+            commentHeader = '"I can make this!"';
+        }
         return (
             <form className='comment-form' onSubmit={this.handleFormSubmit}>
-                <h3>New Comment</h3>
+                <h3>{commentHeader}</h3>
                 <label htmlFor='text'>Body</label>
                 <textarea name='text' value={this.state.text} onChange={this.handleTextChange} rows='4'></textarea>
                 {href}
