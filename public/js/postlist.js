@@ -111,8 +111,6 @@ var PostListItem = React.createClass({
                     typeOfVote: 'upvote'
                 },
                 success: function(response) {
-                    console.log(JSON.stringify(response));
-                    console.log('upvote');
                 },
                 error: function(error) {
                     console.log('error upvoting');
@@ -146,8 +144,6 @@ var PostListItem = React.createClass({
                     typeOfVote: 'downvote'
                 },
                 success: function(response) {
-                    console.log(JSON.stringify(response));
-                    console.log('downvote');
                 },
                 error: function(error) {
                     console.log('error downvoting');
@@ -158,7 +154,6 @@ var PostListItem = React.createClass({
     },
 
     render: function() {
-        console.log(JSON.stringify(this.props));
         var currentScore = this.props.score;
         var votesClass = 'votes';
         if(this.state.upvoted) {

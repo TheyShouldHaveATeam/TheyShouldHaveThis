@@ -30,7 +30,6 @@ var MenuBar = React.createClass({
         var self = this;
 
         // TODO check values before sending
-        console.log(JSON.stringify(user,null,4));
         $.ajax({
             type: 'POST',
             url: '/users',
@@ -40,8 +39,6 @@ var MenuBar = React.createClass({
                 password: user.password
             },
             success: function(newUser) {
-                console.log('created user');
-                console.log(JSON.stringify(newUser, null, 4));
                 self.setState({currentUser: newUser});
                 self.closeAuthModal();
             },
@@ -56,7 +53,6 @@ var MenuBar = React.createClass({
 
     loginAsUser: function(user) {
         var self = this;
-        console.log(JSON.stringify(user,null,4));
         // TODO check values before sending
         $.ajax({
             type: 'POST',
@@ -67,8 +63,6 @@ var MenuBar = React.createClass({
             },
             success: function(loggedInUser) {
                 loggedIn = true;
-                console.log('logged in as user');
-                console.log(JSON.stringify(loggedInUser, null, 4));
                 self.setState({currentUser: loggedInUser});
                 self.closeAuthModal();
             },
@@ -87,7 +81,6 @@ var MenuBar = React.createClass({
             type: 'POST',
             url: '/users/logout',
             success: function(response) {
-                console.log('successfully logged out');
                 self.setState({currentUser: null});
                 loggedIn = false;
             },
@@ -105,8 +98,6 @@ var MenuBar = React.createClass({
     },
 
     render: function() {
-        console.log(this.state.loginError);
-        console.log(this.state.signupError);
         var menuContent = [
             <div id='login-wrapper'>
                 <div id="log-elements-wrapper">
@@ -127,7 +118,6 @@ var MenuBar = React.createClass({
                 </div>
             </div>
         ];
-        console.log(this.state.currentUser);
         if(this.state.currentUser) {
             loggedIn = true;
             menuContent = [
@@ -174,8 +164,6 @@ var UserSignupModal = React.createClass({
 
     handleFormSubmit: function(e) {
         e.preventDefault();
-        console.log('signup');
-        console.log(this.state);
         this.props.createUser({
             email: this.state.email,
             username: this.state.username,
@@ -218,7 +206,6 @@ var UserLoginModal = React.createClass({
 
     handleFormSubmit: function(e) {
         e.preventDefault();
-        console.log('login');
         this.props.loginAsUser({
             email: this.state.email,
             password: this.state.password
