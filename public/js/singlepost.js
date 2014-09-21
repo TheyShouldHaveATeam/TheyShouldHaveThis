@@ -50,16 +50,21 @@ var SinglePost = React.createClass( {
         }
         return (
             <div>
-            <div className='post-list-item'>
-                <h1>{this.state.idea}</h1>
-            </div>
-            <div className={votesClass}>
-                <div className='upvote'></div>
-                <div className='score'>{currentScore}</div>
-                <div className='downvote'></div>
-            </div>
+                <div className='single-post'>
+                    <h1>{this.state.idea}</h1>
 
-            <p>{this.state.desc}</p>
+                    <div className={votesClass}>
+                        <div className='upvote'></div>
+                        <div className='score'>{currentScore}</div>
+                        <div className='downvote'></div>
+                    </div>
+
+                </div>
+
+                <div className='desc-panel'>
+                    <p>{this.state.desc}</p>
+                </div>
+
             </div>
         );
 
