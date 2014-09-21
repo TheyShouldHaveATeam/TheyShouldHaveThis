@@ -92,6 +92,7 @@ form textarea {
   border-style: solid;
   border-width: 2px;
   border-radius: 8px;
+  color: #fff;
 }
 .single-post {
   padding-top: 5px;
@@ -218,4 +219,71 @@ a {
 }
 #align-center {
   text-align: center;
+}
+.idea-wrapper {
+  text-align: left;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.invisible-spacer {
+  display: inline-block;
+  width: 54px;
+  height: 92px;
+}
+.display-inline-block {
+  display: inline-block;
+}
+.idea-wrapper-wrapper {
+  vertical-align: top;
+  padding-top: 5px;
+  padding-left: 5px;
+  width: 420px;
+  overflow: hidden;
+}
+h2 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.idea-desc {
+  font-size: 18px;
+}
+.icons-wrapper {
+  background-color: rgba(255,255,255,0.6);
+  border-radius: 4px 4px 0px 0px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 1.5;
+  margin-right: 8px;
+  height: 22px;
+  padding: 5px;
+}
+.little-icon.comm {
+  width: 22px;
+}
+.little-icon.check {
+  width: 22px;
+}
+.little-icon.excla {
+  width: 12px;
+}
+.comment-count {
+  font-family: 'Grandstander';
+  font-size: 17px;
+  color: #fff;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: #000;
+}
+.username-wrapper {
+  position: absolute;
+  bottom: 0;
+  z-index: 1.5;
+  height: 22px;
+  padding: 5px;
+  padding-left: 0px;
+  font-family: 'Grandstander';
+  font-size: 17px;
+  color: #fff;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: #000;
 }
