@@ -39,6 +39,11 @@ MongoClient.connect((process.env.MONGOLAB_URI
 
     // user routes
     app.post('/users', function(req, res) {
+        if(!req.body.username || !req.body.email || !req.body.password) {
+            res.send(403);
+            return;
+        }
+
         var username = req.body.username;
         var email = req.body.email;
         var password = req.body.password;
@@ -60,6 +65,11 @@ MongoClient.connect((process.env.MONGOLAB_URI
     });
 
     app.get('/users/:id.:format?', function(req, res) {
+        if(!req.params.id) {
+            res.send(403);
+            return;
+        }
+
         var userId = new ObjectID(req.params.id);
 
         dbUser.getUser(db, userId, function(user) {
@@ -84,47 +94,65 @@ MongoClient.connect((process.env.MONGOLAB_URI
     });
 
     app.put('/users/:id', function(req, res) {
-        var userId = new ObjectID(req.params.id);
-        var loggedUserId = req.session.currentUser;
-
-        if(loggedUserId != userId) {
-            res.json({
-                "success": false,
-                "error": "Unmatching userIds",
-                "errorType": "authentication"
-            }, 400);
-            return;
-        }
-
-        dbUser.editUser(db, userId, newCredentials, function(response) {
-            if(response.success) {
-                res.json(response, 200);
-            } else {
-                res.json(response, 400);
+        if(req.session.currentUser) {
+            if(!req.params.id) {
+                res.send(403);
+                return;
             }
-        });
+
+            var userId = new ObjectID(req.params.id);
+            var loggedUserId = req.session.currentUser;
+
+            if(loggedUserId != userId) {
+                res.json({
+                    "success": false,
+                    "error": "Unmatching userIds",
+                    "errorType": "authentication"
+                }, 400);
+                return;
+            }
+
+            dbUser.editUser(db, userId, newCredentials, function(response) {
+                if(response.success) {
+                    res.json(response, 200);
+                } else {
+                    res.json(response, 400);
+                }
+            });
+        } else {
+            res.send(401);
+        }
     });
 
     app.delete('/users/:id', function(req, res) {
-        var userId = new ObjectID(req.params.id);
-        var loggedUserId = req.session.currentUser;
-
-        if(loggedUserId !== userId) {
-            res.json({
-                "success": false,
-                "error": "Unmatching userIds",
-                "errorType": "authentication"
-            }, 400);
-            return;
-        }
-
-        dbUser.deleteUser(db, userId, function(response) {
-            if(response.success) {
-                res.json(response, 200);
-            } else {
-                res.json(response, 400);
+        if(req.session.currentUser) {
+            if(!req.params.id) {
+                res.send(403);
+                return;
             }
-        });
+
+            var userId = new ObjectID(req.params.id);
+            var loggedUserId = req.session.currentUser;
+
+            if(loggedUserId !== userId) {
+                res.json({
+                    "success": false,
+                    "error": "Unmatching userIds",
+                    "errorType": "authentication"
+                }, 400);
+                return;
+            }
+
+            dbUser.deleteUser(db, userId, function(response) {
+                if(response.success) {
+                    res.json(response, 200);
+                } else {
+                    res.json(response, 400);
+                }
+            });
+        } else {
+            res.send(401);
+        }
     });
 
     // post routes
@@ -146,6 +174,11 @@ MongoClient.connect((process.env.MONGOLAB_URI
     });
 
     app.get('/posts/categories/:category.:format?', function(req, res) {
+        if(!req.params.category) {
+            res.send(403);
+            return;
+        }
+
         var category = req.params.category;
         var pageNumber;
         if(req.params.pageNumber) {
@@ -168,6 +201,11 @@ MongoClient.connect((process.env.MONGOLAB_URI
     });
 
     app.get('/posts/user/:userId', function(req, res) {
+        if(!req.params.userId) {
+            res.send(403);
+            return;
+        }
+
         var userId = new ObjectID(req.params.userId);
         var pageNumber;
         if(req.params.pageNumber) {
@@ -187,6 +225,11 @@ MongoClient.connect((process.env.MONGOLAB_URI
     });
 
     app.get('/posts/:id.:format?', function(req, res) {
+        if(!req.params.id) {
+            res.send(403);
+            return;
+        }
+
         var postId = new ObjectID(req.params.id);
 
         dbPost.getPost(db, postId, function(result) {
@@ -205,37 +248,52 @@ MongoClient.connect((process.env.MONGOLAB_URI
     });
 
     app.delete('/posts/:id', function(req, res) {
-        var postId = new ObjectID(req.params.id);
-        var currentUser = new ObjectID(req.session.currentUser);
-
-        dbPost.getPost(db, postId, function(result) {
-            if(!result.success) {
-                res.json(result, 400);
+        if(req.session.currentUser) {
+            if(!req.params.id) {
+                res.send(403);
                 return;
             }
 
-            if(currentUser !== result.userId) {
-                res.json({
-                    "success": false,
-                    "error": "Unmatching userIds",
-                    "errorType": "authentication"
-                }, 400);
-                return;
-            }
+            var postId = new ObjectID(req.params.id);
+            var currentUser = new ObjectID(req.session.currentUser);
 
-            dbPost.deletePost(db, postId, function(result) {
+            dbPost.getPost(db, postId, function(result) {
                 if(!result.success) {
                     res.json(result, 400);
                     return;
                 }
-                res.json(result, 200);
+
+                if(currentUser !== result.userId) {
+                    res.json({
+                        "success": false,
+                        "error": "Unmatching userIds",
+                        "errorType": "authentication"
+                    }, 400);
+                    return;
+                }
+
+                dbPost.deletePost(db, postId, function(result) {
+                    if(!result.success) {
+                        res.json(result, 400);
+                        return;
+                    }
+                    res.json(result, 200);
+                });
             });
-        });
+        } else {
+            res.send(401);
+        }
     });
 
     app.post('/posts', function(req, res) {
         if(req.session.currentUser) {
             var userId = req.session.currentUser; //new ObjectID(req.session.currentUser);
+
+            if(!req.params.idea || !req.params.desc || !req.params.category) {
+                res.send(403);
+                return;
+            }
+
             var idea = req.body.idea;
             var desc = req.body.desc;
             var category = req.body.category;
@@ -255,6 +313,11 @@ MongoClient.connect((process.env.MONGOLAB_URI
 
     // comment routes
     app.get('/posts/:id/comments', function(req, res) {
+        if(!req.params.id) {
+            res.send(403);
+            return;
+        }
+
         var postId = new ObjectID(req.params.id);
         var pageNumber;
         if(req.params.pageNumber) {
@@ -274,6 +337,11 @@ MongoClient.connect((process.env.MONGOLAB_URI
     });
 
     app.get('/comments/:commentId', function(req, res) {
+        if(!req.params.commentId) {
+            res.send(403);
+            return;
+        }
+
         var commentId = new ObjectID(req.params.commentId);
 
         dbComment.getComment(db, commentId, function(result) {
@@ -286,124 +354,166 @@ MongoClient.connect((process.env.MONGOLAB_URI
     });
 
     app.post('/posts/:id/comments', function(req, res) {
-        var postId = new ObjectID(req.params.id);
-        var userId = new ObjetcID(req.session.currentUser);
-        var text = req.params.comment;
-        var type = req.params.type; // must be "theyHave", "canMake" or "comment"
-        if(type !== "theyHave" && type !== "canMake" && type !== "comment") {
-            res.json({
-                "success": false,
-                "error": "Invalid Comment Type",
-                "errorType": "invalidParameter"
-            }, 400);
-            return;
-        }
-
-        var href;
-        if(req.params.href === undefined || res.params.href === "") {
-            if(type === "comment") {
-                href = "";
-            } else {
-                res.json({
-                    "success": false,
-                    "error": "Href is required for \"They Have This\" and \"I Can Make This\" replies",
-                    "errorType": "invalidParameter"
-                }, 400);
-            }
-        } else {
-            href = req.params.href;
-        }
-
-        dbComment.createComment(db, userId, postId, text, type, href, function(result) {
-            if(result.success !== undefined) {
-                res.json(result, 400);
+        if(req.session.currentUser) {
+            if(!req.params.id || !req.params.comment || !req.params.type || !req.params.href) {
+                res.send(403);
                 return;
             }
 
-            res.json(result, 200);
-        });
+            var postId = new ObjectID(req.params.id);
+            var userId = new ObjetcID(req.session.currentUser);
+            var text = req.params.comment;
+            var type = req.params.type; // must be "theyHave", "canMake" or "comment"
+            if(type !== "theyHave" && type !== "canMake" && type !== "comment") {
+                res.json({
+                    "success": false,
+                    "error": "Invalid Comment Type",
+                    "errorType": "invalidParameter"
+                }, 400);
+                return;
+            }
+
+            var href;
+            if(req.params.href === undefined || res.params.href === "") {
+                if(type === "comment") {
+                    href = "";
+                } else {
+                    res.json({
+                        "success": false,
+                        "error": "Href is required for \"They Have This\" and \"I Can Make This\" replies",
+                        "errorType": "invalidParameter"
+                    }, 400);
+                }
+            } else {
+                href = req.params.href;
+            }
+
+            dbComment.createComment(db, userId, postId, text, type, href, function(result) {
+                if(result.success !== undefined) {
+                    res.json(result, 400);
+                    return;
+                }
+
+                res.json(result, 200);
+            });
+        }else {
+            res.send(401);
+        }
     });
 
     app.delete('/comments/:commentId', function(req, res) {
-        var commentId = new ObjectID(req.params.id);
-        var currentUser = new ObjectID(req.session.currentUser);
-
-        dbComment.getComment(db, commentId, function(result) {
-            if(!result.success) {
-                res.json(result, 400);
+        if(req.session.currentUser) {
+            if(!req.params.id) {
+                res.send(403);
                 return;
             }
 
-            if(currentUser !== result.userId) {
-                res.json({
-                    "success": false,
-                    "error": "Unmatching userIds",
-                    "errorType": "authentication"
-                }, 400);
-                return;
-            }
+            var commentId = new ObjectID(req.params.id);
+            var currentUser = new ObjectID(req.session.currentUser);
 
-            dbComment.deleteComment(db, commentId, function(result) {
+            dbComment.getComment(db, commentId, function(result) {
                 if(!result.success) {
                     res.json(result, 400);
                     return;
                 }
-                res.json(result, 200);
+
+                if(currentUser !== result.userId) {
+                    res.json({
+                        "success": false,
+                        "error": "Unmatching userIds",
+                        "errorType": "authentication"
+                    }, 400);
+                    return;
+                }
+
+                dbComment.deleteComment(db, commentId, function(result) {
+                    if(!result.success) {
+                        res.json(result, 400);
+                        return;
+                    }
+                    res.json(result, 200);
+                });
             });
-        });
+        }else {
+            res.send(401);
+        }
     });
 
     // vote routes
     app.post('/posts/:id/vote', function(req, res) {
-        var userId = new ObjectID(req.session.currentUser);
-        var postId = new Object(req.params.id);
-        var typeOfVote = req.params.typeOfVote;
-
-        if(typeOfVote !== "upvote" && typeOfVote !== "downvote") {
-            res.json({
-                "success": false,
-                "error": "typeOfVote must be \"upvote\" or \"downvote\"",
-                "errorType": "invalidParameter"
-            }, 400);
-            return;
-        }
-
-        dbVote.voteOnPost(db, userId, postId, typeOfVote, function(result) {
-            if(!result.success) {
-                res.json(result, 400);
+        if(req.session.currentUser) {
+            var userId = new ObjectID(req.session.currentUser);
+            if(!req.params.id || !req.params.typeOfVote) {
+                res.send(403);
                 return;
             }
 
-            res.json(result, 200);
-        });
+            var postId = new Object(req.params.id);
+            var typeOfVote = req.params.typeOfVote;
+
+            if(typeOfVote !== "upvote" && typeOfVote !== "downvote") {
+                res.json({
+                    "success": false,
+                    "error": "typeOfVote must be \"upvote\" or \"downvote\"",
+                    "errorType": "invalidParameter"
+                }, 400);
+                return;
+            }
+
+            dbVote.voteOnPost(db, userId, postId, typeOfVote, function(result) {
+                if(!result.success) {
+                    res.json(result, 400);
+                    return;
+                }
+
+                res.json(result, 200);
+            });
+        }else {
+            res.send(401);
+        }
     });
 
     app.post('/comments/:id/vote', function(req, res) {
-        var userId = new ObjectID(req.session.currentUser);
-        var commentId = new Object(req.params.id);
-        var typeOfVote = req.params.typeOfVote;
+        if(req.session.currentUser) {
+            var userId = new ObjectID(req.session.currentUser);
 
-        if(typeOfVote !== "upvote" && typeOfVote !== "downvote") {
-            res.json({
-                "success": false,
-                "error": "typeOfVote must be \"upvote\" or \"downvote\"",
-                "errorType": "invalidParameter"
-            }, 400);
-            return;
-        }
-
-        dbVote.voteOnComment(db, userId, commentId, typeOfVote, function(result) {
-            if(!result.success) {
-                res.json(result, 400);
+            if(!req.params.id || !req.params.typeOfVote) {
+                res.send(403);
                 return;
             }
 
-            res.json(result, 200);
-        });
+            var commentId = new Object(req.params.id);
+            var typeOfVote = req.params.typeOfVote;
+
+            if(typeOfVote !== "upvote" && typeOfVote !== "downvote") {
+                res.json({
+                    "success": false,
+                    "error": "typeOfVote must be \"upvote\" or \"downvote\"",
+                    "errorType": "invalidParameter"
+                }, 400);
+                return;
+            }
+
+            dbVote.voteOnComment(db, userId, commentId, typeOfVote, function(result) {
+                if(!result.success) {
+                    res.json(result, 400);
+                    return;
+                }
+
+                res.json(result, 200);
+            });
+        }else {
+            res.send(401);
+        }
     });
 
     // authentication routes
     app.post('/users/login', function(req, res) {
+        if(!req.body.email || !req.body.password) {
+            res.send(403);
+            return;
+        }
+
         dbUser.doesUserExist(db, req.body.email, function(userExists) {
             if(!userExists) {
                 res.send(404);
@@ -433,13 +543,13 @@ MongoClient.connect((process.env.MONGOLAB_URI
         res.send(204);
     });
 
-    app.get('/admin', function(req, res) {
-        req.session.admin = true;
-        res.send('access granted');
-    });
-
-    app.get('/protected',  function(req, res) {
-        if (!req.session.admin) return res.send(401);
-        res.send(200);
-    });
+    // app.get('/admin', function(req, res) {
+    //     req.session.admin = true;
+    //     res.send('access granted');
+    // });
+    //
+    // app.get('/protected',  function(req, res) {
+    //     if (!req.session.admin) return res.send(401);
+    //     res.send(200);
+    // });
 });
