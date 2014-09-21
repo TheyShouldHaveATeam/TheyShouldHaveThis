@@ -316,7 +316,6 @@ MongoClient.connect((process.env.MONGOLAB_URI
             res.send(403);
             return;
         }
-
         var postId = new ObjectID(req.params.id);
         var pageNumber;
         if(req.params.pageNumber) {
@@ -326,7 +325,7 @@ MongoClient.connect((process.env.MONGOLAB_URI
         }
 
         dbComment.getComments(db, postId, pageNumber, function(result) {
-            if(result.success !== undefined) {
+            if(result.success === false) {
                 res.json(result, 400);
                 return;
             }
@@ -354,13 +353,13 @@ MongoClient.connect((process.env.MONGOLAB_URI
 
     app.post('/posts/:id/comments', function(req, res) {
         if(req.session.currentUser) {
-            if(!req.params.id || !req.params.comment || !req.body.type || !req.body.href) {
+            if(!req.params.id || !req.body.comment || !req.body.type) {
                 res.send(403);
                 return;
             }
 
             var postId = new ObjectID(req.params.id);
-            var userId = new ObjetcID(req.session.currentUser);
+            var userId = new ObjectID(req.session.currentUser);
             var text = req.body.comment;
             var type = req.body.type; // must be "theyHave", "canMake" or "comment"
             if(type !== "theyHave" && type !== "canMake" && type !== "comment") {
@@ -373,7 +372,7 @@ MongoClient.connect((process.env.MONGOLAB_URI
             }
 
             var href;
-            if(req.body.href === undefined || res.body.href === "") {
+            if(!req.body.href) {
                 if(type === "comment") {
                     href = "";
                 } else {
@@ -388,7 +387,7 @@ MongoClient.connect((process.env.MONGOLAB_URI
             }
 
             dbComment.createComment(db, userId, postId, text, type, href, function(result) {
-                if(result.success !== undefined) {
+                if(result.success === false) {
                     res.json(result, 400);
                     return;
                 }
