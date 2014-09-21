@@ -169,7 +169,7 @@ var UserSignupModal = React.createClass({
                 <label htmlFor='email'>Email</label>
                 <input type='email' name='email' value={this.state.email} onChange={this.handleEmailChange} />
                 <label htmlFor='username'>Username</label>
-                <input type='text' name='username' value={this.state.username} onChange={this.handleUsernameChange} />
+                <input tynodepe='text' name='username' value={this.state.username} onChange={this.handleUsernameChange} />
                 <label htmlFor='password'>Password</label>
                 <input type='password' name='password' value={this.state.password} onChange={this.handlePasswordChange} />
                 <input id="signup-submit-button" type='submit' value='Sign up!' />

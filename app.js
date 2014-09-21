@@ -33,7 +33,6 @@ MongoClient.connect((process.env.MONGOLAB_URI
     }
 
     app.get('/', function(req, res) {
-        console.log('current user: ' + req.session.currentUser);
         res.render('landing', {title: 'They Should Have This', currentUser: req.session.currentUser});
     });
 
@@ -355,15 +354,15 @@ MongoClient.connect((process.env.MONGOLAB_URI
 
     app.post('/posts/:id/comments', function(req, res) {
         if(req.session.currentUser) {
-            if(!req.params.id || !req.params.comment || !req.params.type || !req.params.href) {
+            if(!req.params.id || !req.params.comment || !req.body.type || !req.body.href) {
                 res.send(403);
                 return;
             }
 
             var postId = new ObjectID(req.params.id);
             var userId = new ObjetcID(req.session.currentUser);
-            var text = req.params.comment;
-            var type = req.params.type; // must be "theyHave", "canMake" or "comment"
+            var text = req.body.comment;
+            var type = req.body.type; // must be "theyHave", "canMake" or "comment"
             if(type !== "theyHave" && type !== "canMake" && type !== "comment") {
                 res.json({
                     "success": false,
@@ -374,7 +373,7 @@ MongoClient.connect((process.env.MONGOLAB_URI
             }
 
             var href;
-            if(req.params.href === undefined || res.params.href === "") {
+            if(req.body.href === undefined || res.body.href === "") {
                 if(type === "comment") {
                     href = "";
                 } else {
@@ -385,7 +384,7 @@ MongoClient.connect((process.env.MONGOLAB_URI
                     }, 400);
                 }
             } else {
-                href = req.params.href;
+                href = req.body.href;
             }
 
             dbComment.createComment(db, userId, postId, text, type, href, function(result) {
@@ -401,7 +400,7 @@ MongoClient.connect((process.env.MONGOLAB_URI
         }
     });
 
-    app.delete('/comments/:commentId', function(req, res) {
+    app.delete('/comments/:id', function(req, res) {
         if(req.session.currentUser) {
             if(!req.params.id) {
                 res.send(403);
@@ -443,13 +442,13 @@ MongoClient.connect((process.env.MONGOLAB_URI
     app.post('/posts/:id/vote', function(req, res) {
         if(req.session.currentUser) {
             var userId = new ObjectID(req.session.currentUser);
-            if(!req.params.id || !req.params.typeOfVote) {
+            if(!req.params.id || !req.body.typeOfVote) {
                 res.send(403);
                 return;
             }
 
-            var postId = new Object(req.params.id);
-            var typeOfVote = req.params.typeOfVote;
+            var postId = new ObjectID(req.params.id);
+            var typeOfVote = req.body.typeOfVote;
 
             if(typeOfVote !== "upvote" && typeOfVote !== "downvote") {
                 res.json({
@@ -477,13 +476,13 @@ MongoClient.connect((process.env.MONGOLAB_URI
         if(req.session.currentUser) {
             var userId = new ObjectID(req.session.currentUser);
 
-            if(!req.params.id || !req.params.typeOfVote) {
+            if(!req.params.id || !req.body.typeOfVote) {
                 res.send(403);
                 return;
             }
 
             var commentId = new Object(req.params.id);
-            var typeOfVote = req.params.typeOfVote;
+            var typeOfVote = req.body.typeOfVote;
 
             if(typeOfVote !== "upvote" && typeOfVote !== "downvote") {
                 res.json({
