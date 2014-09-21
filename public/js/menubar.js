@@ -130,6 +130,8 @@ var UserSignupModal = React.createClass({
     },
 
     handleEmailChange: function() {
+        console.log("email change");
+        console.log(this.state.email);
         this.setState({email: event.target.value});
     },
 
@@ -144,6 +146,7 @@ var UserSignupModal = React.createClass({
     handleFormSubmit: function(e) {
         e.preventDefault();
         console.log('signup');
+        console.log(this.state);
         this.props.createUser({
             email: this.state.email,
             username: this.state.username,
