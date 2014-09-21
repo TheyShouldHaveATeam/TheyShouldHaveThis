@@ -29,6 +29,7 @@ var PostList = React.createClass( {
         var posts = [];
         var self = this;
         this.state.posts.forEach(function(post) {
+
             posts.push(<PostListItem
                 postId={post._id}
                 title={post.idea}
@@ -40,6 +41,7 @@ var PostList = React.createClass( {
                 theyHaveCount={post.theyHave}
                 canMakeCount={post.canMake}
             />);
+
         });
         return (
             <div className = "postlist">
@@ -182,9 +184,6 @@ var PostListItem = React.createClass({
                                 &nbsp;&nbsp;&nbsp;
                                 <span className="comment-count">{this.props.canMakeCount}</span>
                                 &nbsp;<img className="little-icon excla" src="/images/exclamation_colored.png"/>
-                            </div>
-                            <div className="category-wrapper">
-                                {this.props.category}
                             </div>
                         </a>
                     </div>

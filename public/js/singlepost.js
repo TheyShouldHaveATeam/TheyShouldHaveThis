@@ -11,9 +11,12 @@ var SinglePost = React.createClass( {
             downvotes:0,
             commentFeed: 'comment',
             comments: [],
+            upvoted: false,
+            downvoted: false,
             commentCount: 0,
             theyHaveCount: 0,
             canMakeCount: 0
+
         };
     },
 
@@ -101,6 +104,7 @@ var SinglePost = React.createClass( {
     },
 
     toggleUpvote: function(e) {
+
         console.log("up!");
         if(!this.state.upvoted) {
             this.setState({
@@ -116,7 +120,7 @@ var SinglePost = React.createClass( {
         }
         $.ajax({
             type: 'POST',
-            url: '/posts/'+this.props.postId+'.json',
+            url: '/posts/'+this.props.postId+'/vote',
             data: {
                 typeOfVote: 'upvote'
             },
@@ -147,7 +151,7 @@ var SinglePost = React.createClass( {
         }
         $.ajax({
             type: 'POST',
-            url: '/posts/'+this.props.postId+'.json',
+            url: '/posts/'+this.props.postId+'/vote',
             data: {
                 typeOfVote: 'downvote'
             },
@@ -193,9 +197,9 @@ var SinglePost = React.createClass( {
                     <h1><div className="give-me-padding">{this.state.idea}</div></h1>
 
                     <div className={votesClass}>
-                        <div className='upvote'></div>
+                        <div className='upvote' onClick = {this.toggleUpvote}></div>
                         <div className='score'>{currentScore}</div>
-                        <div className='downvote'></div>
+                        <div className='downvote' onClick = {this.toggleDownvote}></div>
                     </div>
                 </div>
 
