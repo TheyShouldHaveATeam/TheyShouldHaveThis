@@ -102,7 +102,7 @@ var MenuBar = React.createClass({
                 <div id="log-elements-wrapper">
                     <div id="elements-wrapper">
                         <span id="align-center">
-                            <button type='button' className='login-signup' onClick={this.openAuthModal}>Signup/Login</button>
+                            <button type='button' className='login-signup' onClick={this.openAuthModal}>Login/Register</button>
                             <div id='auth-modal-backdrop' onClick={this.closeAuthModal}></div>
                             <div id='auth-modal'>
                                 <div id='logo-auth-modal'>
@@ -177,14 +177,14 @@ var UserSignupModal = React.createClass({
     render: function() {
         return (
             <form className='signup-form' onSubmit={this.handleFormSubmit}>
-                <h3>Signup</h3>
+                <h3>Sign Up</h3>
                 <label htmlFor='email'>Email</label>
                 <input type='email' name='email' value={this.state.email} onChange={this.handleEmailChange} />
                 <label htmlFor='username'>Username</label>
                 <input tynodepe='text' name='username' value={this.state.username} onChange={this.handleUsernameChange} />
                 <label htmlFor='password'>Password</label>
                 <input type='password' name='password' value={this.state.password} onChange={this.handlePasswordChange} />
-                <input id="signup-submit-button" type='submit' value='Sign up!' />
+                <input id="signup-submit-button" type='submit' value='Sign Up!' />
             </form>
         );
     }
