@@ -38,16 +38,32 @@ var PostList = React.createClass( {
     }
 });
 
-var PostListItem = React.createClass( {
+var PostListItem = React.createClass({
+    getInitialState: function() {
+        return {
+            upvoted: false,
+            downvoted: false
+        };
+    },
 
     render: function() {
         console.log(JSON.stringify(this.props));
+        var currentScore = this.props.score;
+        var votesClass = 'votes';
+        if(this.state.upvoted) {
+            votesClass += ' upvoted';
+            currentScore++;
+        }
+        else if(this.state.downvoted) {
+            votesClass += ' downvoted';
+            currentScore--;
+        }
         return (
-            <a href={"/posts/"+this.props.postId}>
-                <div class='votes'>
-                    <div class='upvote'></div>
-                    <div class='score'></div>
-                    <div class='downvote'></div>
+            <a className='post-list-item' href={"/posts/"+this.props.postId}>
+                <div className={votesClass}>
+                    <div className='upvote'></div>
+                    <div className='score'>{currentScore}</div>
+                    <div className='downvote'></div>
                 </div>
                 <h2>{this.props.title}</h2>
             </a>
