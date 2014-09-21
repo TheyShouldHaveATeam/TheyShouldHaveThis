@@ -33,8 +33,29 @@ var SinglePost = React.createClass( {
             error: function(error) {
                 console.log('error getting post');
                 console.log(error);
+            },
+
+            success: function(vote) {
+                if(vote.typeOfVote === 'upvote') {
+                    self.setState({
+                        upvoted: true,
+                        downvoted: false
+                    });
+                }
+                else if(vote.typeOfVote === 'downvote') {
+                    self.setState({
+                        upvoted: false,
+                        downvoted: true
+                    });
+                }
+            },
+
+            error: function(err) {
+                console.log('error getting posts');
+                console.log(error);
             }
-        });
+
+    });
 
         this.getPostComments();
     },
@@ -88,6 +109,68 @@ var SinglePost = React.createClass( {
         });
     },
 
+    toggleUpvote: function(e) {
+        console.log("up!");
+        if(!this.state.upvoted) {
+            this.setState({
+                upvoted: true,
+                downvoted: false
+            });
+        }
+        else {
+            this.setState({
+                upvoted: false,
+                downvoted: false
+            });
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/posts/'+this.props.postId+'.json',
+            data: {
+                typeOfVote: 'upvote'
+            },
+            success: function(response) {
+                console.log(JSON.stringify(response));
+                console.log('upvote');
+            },
+            error: function(error) {
+                console.log('error upvoting');
+                console.log(error);
+            }
+        });
+    },
+
+    toggleDownvote: function() {
+        console.log("down");
+        if(!this.state.downvoted) {
+            this.setState({
+                upvoted: false,
+                downvoted: true
+            });
+        }
+        else {
+            this.setState({
+                upvoted: false,
+                downvoted: false
+            });
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/posts/'+this.props.postId+'.json',
+            data: {
+                typeOfVote: 'downvote'
+            },
+            success: function(response) {
+                console.log(JSON.stringify(response));
+                console.log('downvote');
+            },
+            error: function(error) {
+                console.log('error downvoting');
+                console.log(error);
+            }
+        });
+    },
+
     render: function() {
         var currentScore = this.state.score;
         var votesClass = 'votes';
@@ -99,6 +182,8 @@ var SinglePost = React.createClass( {
             votesClass += ' downvoted';
             currentScore--;
         }
+
+
         var commentClass = 'comments';
         var theyHaveClass = 'they-have';
         var canMakeClass = 'can-make';
