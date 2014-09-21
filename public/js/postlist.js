@@ -38,7 +38,7 @@ var PostList = React.createClass( {
     }
 });
 
-var SinglePost = React.createClass( {
+var PostListItem = React.createClass( {
 
     render: function() {
         console.log(JSON.stringify(this.props));
