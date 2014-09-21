@@ -237,7 +237,9 @@ MongoClient.connect((process.env.MONGOLAB_URI
                     res.json(result, 200);
                 } else {
                     res.render('singlepost', {
-                        currentPost: req.params.id
+                        currentPost: req.params.id,
+                        title: 'They Should Have This',
+                        currentUser: req.session.currentUser
                     });
                 }
             } else {

@@ -2,6 +2,8 @@
 
 var MenuBar = React.createClass({
     componentWillMount: function() {
+        authenticate = this.openAuthModal;
+
         var self = this;
         if(this.props.currentUserId) {
             $.ajax({
@@ -62,6 +64,7 @@ var MenuBar = React.createClass({
                 password: user.password
             },
             success: function(loggedInUser) {
+                loggedIn = true;
                 console.log('logged in as user');
                 console.log(JSON.stringify(loggedInUser, null, 4));
                 self.setState({currentUser: loggedInUser});
@@ -82,6 +85,7 @@ var MenuBar = React.createClass({
             success: function(response) {
                 console.log('successfully logged out');
                 self.setState({currentUser: null});
+                loggedIn = false;
             },
             error: function(error) {
                 console.log('error logging out');
@@ -119,6 +123,7 @@ var MenuBar = React.createClass({
         ];
         console.log(this.state.currentUser);
         if(this.state.currentUser) {
+            loggedIn = true;
             menuContent = [
                 <div id='loggedin-wrapper'>
                     <div id="log-elements-wrapper">
