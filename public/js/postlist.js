@@ -88,63 +88,73 @@ var PostListItem = React.createClass({
     },
 
     toggleUpvote: function(e) {
-        if(!this.state.upvoted) {
-            this.setState({
-                upvoted: true,
-                downvoted: false
-            });
+        if(!loggedIn) {
+            authenticate();
         }
         else {
-            this.setState({
-                upvoted: false,
-                downvoted: false
+            if(!this.state.upvoted) {
+                this.setState({
+                    upvoted: true,
+                    downvoted: false
+                });
+            }
+            else {
+                this.setState({
+                    upvoted: false,
+                    downvoted: false
+                });
+            }
+            $.ajax({
+                type: 'POST',
+                url: '/posts/'+this.props.postId+'/vote',
+                data: {
+                    typeOfVote: 'upvote'
+                },
+                success: function(response) {
+                    console.log(JSON.stringify(response));
+                    console.log('upvote');
+                },
+                error: function(error) {
+                    console.log('error upvoting');
+                    console.log(error);
+                }
             });
         }
-        $.ajax({
-            type: 'POST',
-            url: '/posts/'+this.props.postId+'/vote',
-            data: {
-                typeOfVote: 'upvote'
-            },
-            success: function(response) {
-                console.log(JSON.stringify(response));
-                console.log('upvote');
-            },
-            error: function(error) {
-                console.log('error upvoting');
-                console.log(error);
-            }
-        });
     },
 
     toggleDownvote: function() {
-        if(!this.state.downvoted) {
-            this.setState({
-                upvoted: false,
-                downvoted: true
-            });
+        if(!loggedIn) {
+            authenticate();
         }
         else {
-            this.setState({
-                upvoted: false,
-                downvoted: false
+            if(!this.state.downvoted) {
+                this.setState({
+                    upvoted: false,
+                    downvoted: true
+                });
+            }
+            else {
+                this.setState({
+                    upvoted: false,
+                    downvoted: false
+                });
+            }
+            $.ajax({
+                type: 'POST',
+                url: '/posts/'+this.props.postId+'/vote',
+                data: {
+                    typeOfVote: 'downvote'
+                },
+                success: function(response) {
+                    console.log(JSON.stringify(response));
+                    console.log('downvote');
+                },
+                error: function(error) {
+                    console.log('error downvoting');
+                    console.log(error);
+                }
             });
         }
-        $.ajax({
-            type: 'POST',
-            url: '/posts/'+this.props.postId+'/vote',
-            data: {
-                typeOfVote: 'downvote'
-            },
-            success: function(response) {
-                console.log(JSON.stringify(response));
-                console.log('downvote');
-            },
-            error: function(error) {
-                console.log('error downvoting');
-                console.log(error);
-            }
-        });
     },
 
     render: function() {
