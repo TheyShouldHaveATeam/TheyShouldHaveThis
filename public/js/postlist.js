@@ -28,7 +28,7 @@ var PostList = React.createClass( {
     render: function() {
         var posts = [];
         this.state.posts.forEach(function(post) {
-            posts.push(<PostListItem postId={post._id} title={post.idea} score={post.votes.upvotes-post.votes.downvotes} />);
+            posts.push(<PostListItem postId={post._id} title={post.idea} score={post.upvotes-post.downvotes} />);
         });
         return (
             <div className = "postlist">
@@ -59,6 +59,21 @@ var PostListItem = React.createClass({
                 downvoted: false
             });
         }
+        $.ajax({
+            type: 'POST',
+            url: '/posts/'+this.props.postId+'/vote',
+            data: {
+                typeOfVote: 'upvote'
+            },
+            success: function(response) {
+                console.log(JSON.stringify(response));
+                console.log('upvote');
+            },
+            error: function(error) {
+                console.log('error upvoting');
+                console.log(error);
+            }
+        });
     },
 
     toggleDownvote: function() {
@@ -74,6 +89,21 @@ var PostListItem = React.createClass({
                 downvoted: false
             });
         }
+        $.ajax({
+            type: 'POST',
+            url: '/posts/'+this.props.postId+'/vote',
+            data: {
+                typeOfVote: 'downvote'
+            },
+            success: function(response) {
+                console.log(JSON.stringify(response));
+                console.log('downvote');
+            },
+            error: function(error) {
+                console.log('error downvoting');
+                console.log(error);
+            }
+        });
     },
 
     render: function() {

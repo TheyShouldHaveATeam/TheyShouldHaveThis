@@ -21,10 +21,8 @@ function createPost(db, userId, idea, desc, category, callback) {
         "desc": desc,
         "category": category,
         "createdOn": Date.now(),
-        "votes": {
-            "upvotes": 0,
-            "downvotes": 0
-        },
+        "upvotes": 0,
+        "downvotes": 0,
         "comments": {
             "theyHave": 0,
             "comment": 0,
@@ -115,8 +113,10 @@ function getUserPosts(db, userId, pageNumber, callback) {
 }
 
 function incrementPostUpvotes(db, postId, callback) {
-    db.collection('posts').update({ "_id": postId }, { "$inc": { "votes.$.upvotes": 1 } }, function(err, result) {
+    db.collection('posts').update({ "_id": postId }, { "$inc": { "upvotes": 1 } }, function(err, result) {
         if(err) {
+            console.log('ERROR');
+            console.log(err);
             callback({
                 "success": false,
                 "error": err,
@@ -131,7 +131,7 @@ function incrementPostUpvotes(db, postId, callback) {
 }
 
 function decrementPostUpvotes(db, postId, callback) {
-    db.collection('posts').update({ "_id": postId }, { "$inc": { "votes.$.upvotes": -1 } }, function(err, result) {
+    db.collection('posts').update({ "_id": postId }, { "$inc": { "upvotes": -1 } }, function(err, result) {
         if(err) {
             callback({
                 "success": false,
@@ -147,7 +147,7 @@ function decrementPostUpvotes(db, postId, callback) {
 }
 
 function incrementPostDownvotes(db, postId, callback) {
-    db.collection('posts').update({ "_id": postId }, { "$inc": { "votes.$.downvotes": 1 } }, function(err, result) {
+    db.collection('posts').update({ "_id": postId }, { "$inc": { "downvotes": 1 } }, function(err, result) {
         if(err) {
             callback({
                 "success": false,
@@ -163,7 +163,7 @@ function incrementPostDownvotes(db, postId, callback) {
 }
 
 function decrementPostDownvotes(db, postId, callback) {
-    db.collection('posts').update({ "_id": postId }, { "$inc": { "votes.$.downvotes": -1 } }, function(err, result) {
+    db.collection('posts').update({ "_id": postId }, { "$inc": { "downvotes": -1 } }, function(err, result) {
         if(err) {
             callback({
                 "success": false,

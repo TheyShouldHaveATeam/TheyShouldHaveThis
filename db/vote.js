@@ -1,9 +1,10 @@
 var dbUser = require(__dirname + '/user.js');
 var dbPost = require(__dirname + '/post.js');
 var dbComment = require(__dirname + '/comment.js');
+var ObjectID = require('mongodb').ObjectID;
 
 function voteOnPost(db, userId, postId, typeOfVote, callback) {
-    db.collection('postVotes').find({ "postId": postId, "userId": userId }, function(err, result) {
+    db.collection('postVotes').findOne({ "postId": postId, "userId": userId }, function(err, result) {
         if(err) {
             callback({
                 "success": false,
@@ -14,7 +15,7 @@ function voteOnPost(db, userId, postId, typeOfVote, callback) {
         }
 
         if(result) {
-            if(result.typeOfVote == typeOfVote) {
+            if(result.typeOfVote === typeOfVote) {
                 //delete this vote
                 db.collection('postVotes').remove({ "_id": result._id }, function(err, removed) {
                     if(err) {
@@ -77,7 +78,7 @@ function voteOnPost(db, userId, postId, typeOfVote, callback) {
 
                     if(typeOfVote === "upvote") {
                         //need to increment upvote and decrement downvote
-                        dbPost.decrementPostDownvote(db, postId, function(result) {
+                        dbPost.decrementPostDownvotes(db, postId, function(result) {
                             if(result.success === false) {
                                 callback(result);
                                 return;
@@ -90,7 +91,7 @@ function voteOnPost(db, userId, postId, typeOfVote, callback) {
                                 }
 
                                 var userId = new ObjectID(result.userId);
-                                dbUser.decrementPostDownvote(db, userId, function(result) {
+                                dbUser.decrementPostDownvotes(db, userId, function(result) {
                                     if(result.success === false) {
                                         callback(result);
                                         return;
@@ -110,7 +111,7 @@ function voteOnPost(db, userId, postId, typeOfVote, callback) {
                         });
                     } else {
                         //need to decrement upvote and increment downvote
-                        dbPost.decrementPostUpvote(db, postId, function(result) {
+                        dbPost.decrementPostUpvotes(db, postId, function(result) {
                             if(result.success === false) {
                                 callback(result);
                                 return;
@@ -123,7 +124,7 @@ function voteOnPost(db, userId, postId, typeOfVote, callback) {
                                 }
 
                                 var userId = new ObjectID(result.userId);
-                                dbUser.decrementPostUpvote(db, userId, function(result) {
+                                dbUser.decrementPostUpvotes(db, userId, function(result) {
                                     if(result.success === false) {
                                         callback(result);
                                         return;
@@ -180,6 +181,7 @@ function voteOnPost(db, userId, postId, typeOfVote, callback) {
                                 return;
                             }
 
+                            firstResult.success = true;
                             callback(firstResult);
                         });
                     });
@@ -282,7 +284,7 @@ function voteOnComment(db, userId, commentId, typeOfVote, callback) {
 
                     if(typeOfVote === "upvote") {
                         //need to increment upvote and decrement downvote
-                        dbComment.decrementCommentDownvote(db, commentId, function(result) {
+                        dbComment.decrementCommentDownvotes(db, commentId, function(result) {
                             if(result.success === false) {
                                 callback(result);
                                 return;
@@ -295,7 +297,7 @@ function voteOnComment(db, userId, commentId, typeOfVote, callback) {
                                 }
 
                                 var userId = new ObjectID(result.userId);
-                                dbUser.decrementCommentDownvote(db, userId, function(result) {
+                                dbUser.decrementCommentDownvotes(db, userId, function(result) {
                                     if(result.success === false) {
                                         callback(result);
                                         return;
@@ -315,7 +317,7 @@ function voteOnComment(db, userId, commentId, typeOfVote, callback) {
                         });
                     } else {
                         //need to decrement upvote and increment downvote
-                        dbComment.decrementCommentUpvote(db, commentId, function(result) {
+                        dbComment.decrementCommentUpvotes(db, commentId, function(result) {
                             if(result.success === false) {
                                 callback(result);
                                 return;
@@ -328,7 +330,7 @@ function voteOnComment(db, userId, commentId, typeOfVote, callback) {
                                 }
 
                                 var userId = new ObjectID(result.userId);
-                                dbUser.decrementCommentUpvote(db, userId, function(result) {
+                                dbUser.decrementCommentUpvotes(db, userId, function(result) {
                                     if(result.success === false) {
                                         callback(result);
                                         return;

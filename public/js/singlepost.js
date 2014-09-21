@@ -7,7 +7,8 @@ var SinglePost = React.createClass( {
             desc: '',
             category: '',
             createdOn: 0,
-            votes: {upvotes:0, downvotes:0},
+            upvotes:0,
+            downvotes:0,
             comments: {theyHave:0, canMake:0, comment:0}
         };
     },
@@ -25,7 +26,7 @@ var SinglePost = React.createClass( {
                     desc: post.desc,
                     category: post.category,
                     createdOn: post.createdOn,
-                    score: post.votes.upvotes - post.votes.downvotes,
+                    score: post.upvotes - post.downvotes,
                     comments: post.comments
                 });
             },
@@ -37,7 +38,7 @@ var SinglePost = React.createClass( {
     },
 
     render: function() {
-        var currentScore = this.statescore;
+        var currentScore = this.state.score;
         var votesClass = 'votes';
         if(this.state.upvoted) {
             votesClass += ' upvoted';
