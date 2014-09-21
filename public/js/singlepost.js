@@ -25,7 +25,7 @@ var SinglePost = React.createClass( {
                     desc: post.desc,
                     category: post.category,
                     createdOn: post.createdOn,
-                    votes: post.votes,
+                    score: post.votes.upvotes - post.votes.downvotes,
                     comments: post.comments
                 });
             },
@@ -37,10 +37,28 @@ var SinglePost = React.createClass( {
     },
 
     render: function() {
+        var currentScore = this.statescore;
+        var votesClass = 'votes';
+        if(this.state.upvoted) {
+            votesClass += ' upvoted';
+            currentScore++;
+        }
+        else if(this.state.downvoted) {
+            votesClass += ' downvoted';
+            currentScore--;
+        }
         return (
-            <div className='single-post'>
+            <div>
+            <a className='post-list-item' href={"/posts/"+this.props.postId+'.json'}>
                 <h1>{this.state.idea}</h1>
-                <p>{this.state.desc}</p>
+            </a>
+            <div className={votesClass}>
+                <div className='upvote'></div>
+                <div className='score'>{currentScore}</div>
+                <div className='downvote'></div>
+            </div>
+
+            <p>{this.state.desc}</p>
             </div>
         );
 
