@@ -8,4 +8,6 @@ head
     script(src='/libs/JSXTransformer.js')
 body
     div#current-user=currentUser
+    script(type='text/javascript').
+        var currentUserId = $('#current-user').html();
     block content

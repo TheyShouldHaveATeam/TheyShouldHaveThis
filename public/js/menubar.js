@@ -217,7 +217,6 @@ var UserLoginModal = React.createClass({
     }
 });
 
-var currentUserId = $('#current-user').html();
 React.renderComponent(
     <MenuBar loggedIn={false} currentUserId={currentUserId} />,
     document.getElementById('menubar')

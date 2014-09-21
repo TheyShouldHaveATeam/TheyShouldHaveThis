@@ -430,6 +430,22 @@ function getPostVote(db, voteId, callback) {
     });
 }
 
+function getUserVoteOnPost(db, postId, userId, callback) {
+    db.collection('postVotes').findOne({ "postId": postId, "userId": userId }, function(err, result) {
+        if(err) {
+            callback({
+                success: false,
+                error: err,
+                errorType: 'database'
+            });
+            return;
+        }
+        if(!result) result = {};
+        result.success = true;
+        callback(result);
+    });
+}
+
 function getCommentVote(db, voteId, callback) {
     db.collection('commentVotes').find({ "_id": voteId }, function(err, result) {
         if(err) {
@@ -450,5 +466,6 @@ module.exports = {
     getPostVote: getPostVote,
     getCommentVote: getCommentVote,
     voteOnComment: voteOnComment,
-    voteOnPost: voteOnPost
+    voteOnPost: voteOnPost,
+    getUserVoteOnPost: getUserVoteOnPost
 };
