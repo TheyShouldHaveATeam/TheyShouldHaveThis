@@ -237,7 +237,7 @@ function authenticateUser(db, email, password, callback) {
         else {
             callback({
                 "success": false,
-                "error": "A use with this email/password does not exist.",
+                "error": "A user with this email/password does not exist.",
                 "errorType": "authentication"
             });
         }
