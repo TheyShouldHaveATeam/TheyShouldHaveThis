@@ -119,7 +119,7 @@ form textarea {
   margin-bottom: 0px;
 }
 .votes {
-  top: 25px;
+  top: 15px;
   left: 15px;
   position: absolute;
 }
@@ -429,7 +429,6 @@ h2 {
   text-align: center;
   width: 100%;
 }
-<<<<<<< HEAD
 .comment-text {
   width: 100%;
 }
@@ -443,14 +442,23 @@ h2 {
   border-radius: 8px;
   position: relative;
 }
-.comment {
-  background-color: #b2ddfe;
+.comment-list-item.comment:nth-child(odd) .comment-entire {
+  background-color: #7cdebd;
 }
-.canMake {
-  background-color: #fdd889;
+.comment-list-item.comment:nth-child(even) .comment-entire {
+  background-color: #57a3de;
 }
-.theyHave {
-  background-color: #a3d39c;
+.comment-list-item.canMake:nth-child(odd) .comment-entire {
+  background-color: #f2bf52;
+}
+.comment-list-item.canMake:nth-child(even) .comment-entire {
+  background-color: #d69311;
+}
+.comment-list-item.theyHave:nth-child(odd) .comment-entire {
+  background-color: #84d193;
+}
+.comment-list-item.theyHave:nth-child(even) .comment-entire {
+  background-color: #47a340;
 }
 .comment-text {
   width: calc(100% - 16px);
@@ -462,9 +470,12 @@ h2 {
 .comment-footer {
   width: 100%;
   display: inline-block;
-=======
+}
 .error {
   color: #fff;
   background-color: #f00;
->>>>>>> ece8f163f95108910f7d9167327ad1c01426bef1
+}
+.score {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
