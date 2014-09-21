@@ -28,7 +28,7 @@ var PostList = React.createClass( {
     render: function() {
         var posts = [];
         this.state.posts.forEach(function(post) {
-            posts.push(<SinglePost postId={post._id} title={post.idea} score={post.votes.upvotes-post.votes.downvotes} />);
+            posts.push(<PostListItem postId={post._id} title={post.idea} score={post.votes.upvotes-post.votes.downvotes} />);
         });
         return (
             <div className = "postlist">
