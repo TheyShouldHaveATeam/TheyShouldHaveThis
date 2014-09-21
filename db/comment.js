@@ -77,9 +77,9 @@ function deleteComment(db, commentId, callback) {
 }
 
 
-function getComments(db, postId, callback) {
-    var numberOfComments = 50;
-    db.collection('posts').find({"$query": {"postId": postId}, "$orderBy": { "createdOn" : -1 } }).limit(numberOfComments).toArray(function(result) {
+function getComments(db, postId, pageNumber, callback) {
+    var commentsPerPage = 50;
+    db.collection('posts').find({"$query": {"postId": postId}, "$orderBy": { "createdOn" : -1 } }).skip(pageNumber * commentsPerPage).limit(commentsPerPage).toArray(function(result) {
         if(err) {
             callback({
                 "success": false,

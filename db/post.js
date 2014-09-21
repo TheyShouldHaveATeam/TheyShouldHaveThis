@@ -63,10 +63,10 @@ function deletePost(db, postId, callback) {
     })
 }
 
-function getPosts(db, callback) {
-    var numberOfPosts = 25;
+function getPosts(db, pageNumber, callback) {
+    var postsPerPage = 25;
 
-    db.collection('posts').find({ "$query": {}, "$orderby": { "createdOn" : -1 } }).limit(numberOfPosts).toArray(function(err, result) {
+    db.collection('posts').find({ "$query": {}, "$orderby": { "createdOn" : -1 } }).skip(pageNumber * postsPerPage).limit(postsPerPage).toArray(function(err, result) {
         if(err) {
             callback({
                 "success": false,
@@ -80,10 +80,10 @@ function getPosts(db, callback) {
     });
 }
 
-function getCategoryPosts(db, category, callback) {
-    var numberOfPosts = 25;
+function getCategoryPosts(db, category, pageNumber, callback) {
+    var postsPerPage = 25;
 
-    db.collection('posts').find({ "$query": { "category": category }, "$orderby": { "createdOn" : -1 } }).limit(numberOfPosts).toArray(function(err, result) {
+    db.collection('posts').find({ "$query": { "category": category }, "$orderby": { "createdOn" : -1 } }).skip(pageNumber * postsPerPage).limit(postsPerPage).toArray(function(err, result) {
         if(err) {
             callback({
                 "success": false,
@@ -97,10 +97,10 @@ function getCategoryPosts(db, category, callback) {
     });
 }
 
-function getUserPosts(db, userId, callback) {
-    var numberOfPosts = 25;
+function getUserPosts(db, userId, pageNumber, callback) {
+    var postsPerPage = 25;
 
-    db.collection('posts').find({ "$query": { "userId": userId }, "$orderby": { "createdOn" : -1 } }).limit(numberOfPosts).toArray(function(err, result) {
+    db.collection('posts').find({ "$query": { "userId": userId }, "$orderby": { "createdOn" : -1 } }).skip(pageNumber * postsPerPage).limit(postsPerPage).toArray(function(err, result) {
         if(err) {
             callback({
                 "success": false,
