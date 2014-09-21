@@ -105,7 +105,7 @@ var MenuBar = React.createClass({
                         <div id='auth-modal-backdrop' onClick={this.closeAuthModal}></div>
                         <div id='auth-modal'>
                             <div id='logo-auth-modal'>
-                                <img id='logo-auth-modal-img' src="/images/logo_bw.jpg" />
+                                <img id='logo-auth-modal-img' src="/images/loading.gif" />
                                 <h5 id="auth-desc">TheyShouldHaveThis is all about connecting those who have ideas with those who have the skills to make these ideas become reality.<br/>Post an idea, find out if 'They Have This' already, or if someone is interested in creating it.</h5>
                             </div>
                             <UserSignupModal key='signup' createUser={this.createUser} />
@@ -225,7 +225,6 @@ var UserLoginModal = React.createClass({
     }
 });
 
-var currentUserId = $('#current-user').html();
 React.renderComponent(
     <MenuBar loggedIn={false} currentUserId={currentUserId} />,
     document.getElementById('menubar')

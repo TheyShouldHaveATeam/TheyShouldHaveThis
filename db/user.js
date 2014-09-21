@@ -105,12 +105,10 @@ function createUser(db, username, email, password, callback) {
                         "password": hash,
                         "email": email,
                         "createdOn": Date.now(),
-                        "votes": {
-                            "postUpvotes": 0,
-                            "postDownvotes": 0,
-                            "commentUpvotes": 0,
-                            "commentDownvotes": 0
-                        }
+                        "postUpvotes": 0,
+                        "postDownvotes": 0,
+                        "commentUpvotes": 0,
+                        "commentDownvotes": 0
                     };
 
                     db.collection('users').insert(user, function(err, inserted) {
@@ -247,7 +245,7 @@ function authenticateUser(db, email, password, callback) {
 }
 
 function incrementPostUpvotes(db, userId, callback) {
-    db.collection('users').update({ "_id": userId }, { "$inc": { "votes.$.postUpvotes": 1 } }, function(err, result) {
+    db.collection('users').update({ "_id": userId }, { "$inc": { "postUpvotes": 1 } }, function(err, result) {
         if(err) {
             callback({
                 "success": false,
@@ -263,7 +261,7 @@ function incrementPostUpvotes(db, userId, callback) {
 }
 
 function decrementPostUpvotes(db, userId, callback) {
-    db.collection('users').update({ "_id": userId }, { "$inc": { "votes.$.postUpvotes": -1 } }, function(err, result) {
+    db.collection('users').update({ "_id": userId }, { "$inc": { "postUpvotes": -1 } }, function(err, result) {
         if(err) {
             callback({
                 "success": false,
@@ -279,7 +277,7 @@ function decrementPostUpvotes(db, userId, callback) {
 }
 
 function incrementCommentUpvotes(db, userId, callback) {
-    db.collection('users').update({ "_id": userId }, { "$inc": { "votes.$.commentUpvotes": 1 } }, function(err, result) {
+    db.collection('users').update({ "_id": userId }, { "$inc": { "commentUpvotes": 1 } }, function(err, result) {
         if(err) {
             callback({
                 "success": false,
@@ -295,7 +293,7 @@ function incrementCommentUpvotes(db, userId, callback) {
 }
 
 function decrementCommentUpvotes(db, userId, callback) {
-    db.collection('users').update({ "_id": userId }, { "$inc": { "votes.$.commentUpvotes": -1 } }, function(err, result) {
+    db.collection('users').update({ "_id": userId }, { "$inc": { "commentUpvotes": -1 } }, function(err, result) {
         if(err) {
             callback({
                 "success": false,
@@ -311,7 +309,7 @@ function decrementCommentUpvotes(db, userId, callback) {
 }
 
 function incrementPostDownvotes(db, userId, callback) {
-    db.collection('users').update({ "_id": userId }, { "$inc": { "votes.$.postDownvotes": 1 } }, function(err, result) {
+    db.collection('users').update({ "_id": userId }, { "$inc": { "postDownvotes": 1 } }, function(err, result) {
         if(err) {
             callback({
                 "success": false,
@@ -327,7 +325,7 @@ function incrementPostDownvotes(db, userId, callback) {
 }
 
 function decrementPostDownvotes(db, userId, callback) {
-    db.collection('users').update({ "_id": userId }, { "$inc": { "votes.$.postDownvotes": -1 } }, function(err, result) {
+    db.collection('users').update({ "_id": userId }, { "$inc": { "postDownvotes": -1 } }, function(err, result) {
         if(err) {
             callback({
                 "success": false,
@@ -343,7 +341,7 @@ function decrementPostDownvotes(db, userId, callback) {
 }
 
 function incrementCommentDownvotes(db, userId, callback) {
-    db.collection('users').update({ "_id": userId }, { "$inc": { "votes.$.commentDownvotes": 1 } }, function(err, result) {
+    db.collection('users').update({ "_id": userId }, { "$inc": { "commentDownvotes": 1 } }, function(err, result) {
         if(err) {
             callback({
                 "success": false,
@@ -359,7 +357,7 @@ function incrementCommentDownvotes(db, userId, callback) {
 }
 
 function decrementCommentDownvotes(db, userId, callback) {
-    db.collection('users').update({ "_id": userId }, { "$inc": { "votes.$.commentDownvotes": -1 } }, function(err, result) {
+    db.collection('users').update({ "_id": userId }, { "$inc": { "commentDownvotes": -1 } }, function(err, result) {
         if(err) {
             callback({
                 "success": false,

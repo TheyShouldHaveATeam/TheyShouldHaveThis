@@ -50,9 +50,9 @@ var SinglePost = React.createClass( {
         }
         return (
             <div>
-            <a className='post-list-item' href={"/posts/"+this.props.postId+'.json'}>
+            <div className='post-list-item'>
                 <h1>{this.state.idea}</h1>
-            </a>
+            </div>
             <div className={votesClass}>
                 <div className='upvote'></div>
                 <div className='score'>{currentScore}</div>
