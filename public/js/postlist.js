@@ -29,7 +29,17 @@ var PostList = React.createClass( {
         var posts = [];
         var self = this;
         this.state.posts.forEach(function(post) {
-            posts.push(<PostListItem postId={post._id} title={post.idea} score={post.upvotes-post.downvotes} userId={self.props.userId} desc={post.desc} category={post.category} />);
+            posts.push(<PostListItem
+                postId={post._id}
+                title={post.idea}
+                score={post.upvotes-post.downvotes}
+                userId={self.props.userId}
+                desc={post.desc}
+                category={post.category}
+                commentCount={post.comment}
+                theyHaveCount={post.theyHave}
+                canMakeCount={post.canMake}
+            />);
         });
         return (
             <div className = "postlist">
@@ -164,13 +174,13 @@ var PostListItem = React.createClass({
                                 raphael
                             </div>
                             <div className="icons-wrapper">
-                                <span className="comment-count">3</span>
+                                <span className="comment-count">{this.props.commentCount}</span>
                                 &nbsp;<img className="little-icon comm" src="/images/comment_colored.png"/>
                                 &nbsp;&nbsp;&nbsp;
-                                <span className="comment-count">3</span>
+                                <span className="comment-count">{this.props.theyHaveCount}</span>
                                 &nbsp;<img className="little-icon check" src="/images/checkmark_colored.png"/>
                                 &nbsp;&nbsp;&nbsp;
-                                <span className="comment-count">3</span>
+                                <span className="comment-count">{this.props.canMakeCount}</span>
                                 &nbsp;<img className="little-icon excla" src="/images/exclamation_colored.png"/>
                             </div>
                             <div className="category-wrapper">

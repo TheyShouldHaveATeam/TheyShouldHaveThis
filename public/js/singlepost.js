@@ -9,33 +9,16 @@ var SinglePost = React.createClass( {
             createdOn: 0,
             upvotes:0,
             downvotes:0,
+            commentFeed: 'comment',
             comments: [],
-            commentFeed: 'comment'
+            commentCount: 0,
+            theyHaveCount: 0,
+            canMakeCount: 0
         };
     },
 
     componentWillMount: function() {
-        var self = this;
-
-        $.ajax({
-            type: 'GET',
-            url: '/posts/'+this.props.postId+'.json',
-            success: function(post) {
-                console.log(post);
-                self.setState({
-                    idea: post.idea,
-                    desc: post.desc,
-                    category: post.category,
-                    createdOn: post.createdOn,
-                    score: post.upvotes - post.downvotes
-                });
-            },
-            error: function(error) {
-                console.log('error getting post');
-                console.log(error);
-            }
-        });
-
+        this.updatePostData();
         this.getPostComments();
     },
 
@@ -64,6 +47,32 @@ var SinglePost = React.createClass( {
         });
     },
 
+    updatePostData: function() {
+        var self = this;
+
+        $.ajax({
+            type: 'GET',
+            url: '/posts/'+this.props.postId+'.json',
+            success: function(post) {
+                console.log(post);
+                self.setState({
+                    idea: post.idea,
+                    desc: post.desc,
+                    category: post.category,
+                    createdOn: post.createdOn,
+                    score: post.upvotes - post.downvotes,
+                    commentCount: post.comment,
+                    theyHaveCount: post.theyHave,
+                    canMakeCount: post.canMake
+                });
+            },
+            error: function(error) {
+                console.log('error getting post');
+                console.log(error);
+            }
+        });
+    },
+
     createComment: function(comment) {
         var self = this;
 
@@ -80,6 +89,7 @@ var SinglePost = React.createClass( {
                 console.log('created comment');
                 console.log(JSON.stringify(newComment, null, 4));
                 self.getPostComments();
+                self.updatePostData();
             },
             error: function(error) {
                 console.log('error creating comment');
@@ -129,13 +139,13 @@ var SinglePost = React.createClass( {
 
                     <div className="desc-footer">
                         <div className='comment-icons'>
-                            <span className="comment-count-single">3</span>
+                            <span className="comment-count-single">{this.state.commentCount}</span>
                             &nbsp;<div onClick={this.selectCommentType} className={commentClass}></div>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <span className="comment-count-single">3</span>
+                            <span className="comment-count-single">{this.state.theyHaveCount}</span>
                             &nbsp;<div onClick={this.selectTheyHaveType} className={theyHaveClass}></div>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <span className="comment-count-single">3</span>
+                            <span className="comment-count-single">{this.state.canMakeCount}</span>
                             &nbsp;<div onClick={this.selectCanMakeType} className={canMakeClass}></div>
                         </div>
                     </div>
