@@ -44,7 +44,12 @@ var SinglePost = React.createClass( {
         console.log(JSON.stringify(this.props));
         return (
             <a href={"/posts/"+this.props.postId}>
-                <h1>{this.props.title}</h1>
+                <div class='votes'>
+                    <div class='upvote'></div>
+                    <div class='score'></div>
+                    <div class='downvote'></div>
+                </div>
+                <h2>{this.props.title}</h2>
             </a>
         );
 

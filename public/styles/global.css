@@ -59,6 +59,7 @@ form textarea {
   bottom: 0;
   display: none;
 }
-#current-user {
+#current-user,
+#current-post {
   display: none;
 }
