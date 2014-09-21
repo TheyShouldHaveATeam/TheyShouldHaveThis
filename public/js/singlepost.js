@@ -21,8 +21,6 @@ var SinglePost = React.createClass( {
     },
 
     componentWillMount: function() {
-        var self = this;
-
         this.updatePostData();
         this.getPostComments();
     },
@@ -68,6 +66,18 @@ var SinglePost = React.createClass( {
                     commentCount: post.comment,
                     theyHaveCount: post.theyHave,
                     canMakeCount: post.canMake
+                });
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/users/'+post.userId+'.json',
+                    success: function(user) {
+                        self.setState({username:user.username});
+                    },
+                    error: function(error) {
+                        console.log('error getting username');
+                        console.log(error);
+                    }
                 });
             },
             error: function(error) {
@@ -206,7 +216,7 @@ var SinglePost = React.createClass( {
                     <span className="make-me-black"><p>{this.state.desc}</p></span>
 
                     <div className="desc-footer">
-                        <div className="username-wrapper-single">raphael</div>
+                        <div className="username-wrapper-single">{this.state.username}</div>
                         <div className='comment-icons'>
                             <span className="comment-count-single">{this.state.commentCount}</span>
                             &nbsp;<div onClick={this.selectCommentType} className={commentClass}></div>
