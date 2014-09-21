@@ -263,9 +263,17 @@ var CommentForm = React.createClass({
                 <input type='text' name='href' value={this.state.href} onChange={this.handleHrefChange} />
             ];
         }
+
+        var commentHeader = 'Comment';
+        if(this.props.type === 'theyHave') {
+            commentHeader = '"They have this!"';
+        }
+        else if(this.props.type === 'canMake') {
+            commentHeader = '"I can make this!"';
+        }
         return (
             <form className='comment-form' onSubmit={this.handleFormSubmit}>
-                <h3>New Comment</h3>
+                <h3>{commentHeader}</h3>
                 <label htmlFor='text'>Body</label>
                 <textarea name='text' value={this.state.text} onChange={this.handleTextChange} rows='4'></textarea>
                 {href}
