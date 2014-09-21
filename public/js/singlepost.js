@@ -112,10 +112,10 @@ var SinglePost = React.createClass( {
             canMakeClass += ' selected';
         }
         return (
-            <div>
-                <a className='post-list-item' href={"/posts/"+this.props.postId+'.json'}>
-                    <h1>{this.state.idea}</h1>
-                </a>
+
+            <div className='single-post make-me-white'>
+                <h1><div className="post-list-item give-me-padding">{this.state.idea}</div></h1>
+
                 <div className={votesClass}>
                     <div className='upvote'></div>
                     <div className='score'>{currentScore}</div>
@@ -130,10 +130,14 @@ var SinglePost = React.createClass( {
                     <div onClick={this.selectCanMakeType} className={canMakeClass}></div>
                 </div>
 
+
+                <div className='desc-panel'>
+                    <span className="make-me-black"><p>{this.state.desc}</p></span>
+                </div>
+
                 <CommentList type={this.state.commentFeed} comments={this.state.comments} createComment={this.createComment} />
             </div>
         );
-
     }
 });
 
