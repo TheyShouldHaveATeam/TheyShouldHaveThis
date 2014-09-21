@@ -125,13 +125,22 @@ var SinglePost = React.createClass( {
 
                 <div className='desc-panel'>
                     <span className="make-me-black"><p>{this.state.desc}</p></span>
+                    <br/>
+
+                    <div className="desc-footer">
+                        <div className='comment-icons'>
+                            <span className="comment-count-single">3</span>
+                            &nbsp;<div onClick={this.selectCommentType} className={commentClass}></div>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <span className="comment-count-single">3</span>
+                            &nbsp;<div onClick={this.selectTheyHaveType} className={theyHaveClass}></div>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <span className="comment-count-single">3</span>
+                            &nbsp;<div onClick={this.selectCanMakeType} className={canMakeClass}></div>
+                        </div>
+                    </div>
                 </div>
 
-                <div className='comment-icons'>
-                    <div onClick={this.selectCommentType} className={commentClass}></div>
-                    <div onClick={this.selectTheyHaveType} className={theyHaveClass}></div>
-                    <div onClick={this.selectCanMakeType} className={canMakeClass}></div>
-                </div>
                 <CommentList type={this.state.commentFeed} comments={this.state.comments} createComment={this.createComment} />
             </div>
         );
