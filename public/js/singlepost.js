@@ -18,6 +18,8 @@ var SinglePost = React.createClass( {
     },
 
     componentWillMount: function() {
+        var self = this;
+
         this.updatePostData();
         this.getPostComments();
     },
@@ -98,6 +100,68 @@ var SinglePost = React.createClass( {
         });
     },
 
+    toggleUpvote: function(e) {
+        console.log("up!");
+        if(!this.state.upvoted) {
+            this.setState({
+                upvoted: true,
+                downvoted: false
+            });
+        }
+        else {
+            this.setState({
+                upvoted: false,
+                downvoted: false
+            });
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/posts/'+this.props.postId+'.json',
+            data: {
+                typeOfVote: 'upvote'
+            },
+            success: function(response) {
+                console.log(JSON.stringify(response));
+                console.log('upvote');
+            },
+            error: function(error) {
+                console.log('error upvoting');
+                console.log(error);
+            }
+        });
+    },
+
+    toggleDownvote: function() {
+        console.log("down");
+        if(!this.state.downvoted) {
+            this.setState({
+                upvoted: false,
+                downvoted: true
+            });
+        }
+        else {
+            this.setState({
+                upvoted: false,
+                downvoted: false
+            });
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/posts/'+this.props.postId+'.json',
+            data: {
+                typeOfVote: 'downvote'
+            },
+            success: function(response) {
+                console.log(JSON.stringify(response));
+                console.log('downvote');
+            },
+            error: function(error) {
+                console.log('error downvoting');
+                console.log(error);
+            }
+        });
+    },
+
     render: function() {
         var currentScore = this.state.score;
         var votesClass = 'votes';
@@ -109,6 +173,8 @@ var SinglePost = React.createClass( {
             votesClass += ' downvoted';
             currentScore--;
         }
+
+
         var commentClass = 'comments';
         var theyHaveClass = 'they-have';
         var canMakeClass = 'can-make';
