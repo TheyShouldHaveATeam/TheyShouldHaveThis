@@ -41,7 +41,9 @@ form input, form textarea
     font-family 'Lato-Regular'
     src url('/fonts/Lato-Regular.ttf')
 #auth-modal, #new-post-modal
-    height: 620px
+    top 50px
+    bottom 50px
+    overflow scroll
     position absolute
     left 200px
     right 200px
@@ -260,6 +262,8 @@ a
     padding-top 5px
     padding-left 5px
     width 420px
+    text-overflow ellipsis
+    white-space nowrap
     overflow hidden
 h2
     padding-top 7px
@@ -388,3 +392,6 @@ h2
 .comment-footer
     width 100%
     display inline-block
+.error
+    color white
+    background-color red

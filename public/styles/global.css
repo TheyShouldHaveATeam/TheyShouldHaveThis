@@ -55,7 +55,9 @@ form textarea {
 }
 #auth-modal,
 #new-post-modal {
-  height: 620px;
+  top: 50px;
+  bottom: 50px;
+  overflow: scroll;
   position: absolute;
   left: 200px;
   right: 200px;
@@ -306,6 +308,8 @@ a {
   padding-top: 5px;
   padding-left: 5px;
   width: 420px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   overflow: hidden;
 }
 h2 {
@@ -425,6 +429,7 @@ h2 {
   text-align: center;
   width: 100%;
 }
+<<<<<<< HEAD
 .comment-text {
   width: 100%;
 }
@@ -457,4 +462,9 @@ h2 {
 .comment-footer {
   width: 100%;
   display: inline-block;
+=======
+.error {
+  color: #fff;
+  background-color: #f00;
+>>>>>>> ece8f163f95108910f7d9167327ad1c01426bef1
 }

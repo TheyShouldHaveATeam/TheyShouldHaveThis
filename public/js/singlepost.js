@@ -9,33 +9,21 @@ var SinglePost = React.createClass( {
             createdOn: 0,
             upvotes:0,
             downvotes:0,
+            commentFeed: 'comment',
             comments: [],
-            commentFeed: 'comment'
+            upvoted: false,
+            downvoted: false,
+            commentCount: 0,
+            theyHaveCount: 0,
+            canMakeCount: 0
+
         };
     },
 
     componentWillMount: function() {
         var self = this;
 
-        $.ajax({
-            type: 'GET',
-            url: '/posts/'+this.props.postId+'.json',
-            success: function(post) {
-                console.log(post);
-                self.setState({
-                    idea: post.idea,
-                    desc: post.desc,
-                    category: post.category,
-                    createdOn: post.createdOn,
-                    score: post.upvotes - post.downvotes
-                });
-            },
-            error: function(error) {
-                console.log('error getting post');
-                console.log(error);
-            }
-        });
-
+        this.updatePostData();
         this.getPostComments();
     },
 
@@ -64,6 +52,32 @@ var SinglePost = React.createClass( {
         });
     },
 
+    updatePostData: function() {
+        var self = this;
+
+        $.ajax({
+            type: 'GET',
+            url: '/posts/'+this.props.postId+'.json',
+            success: function(post) {
+                console.log(post);
+                self.setState({
+                    idea: post.idea,
+                    desc: post.desc,
+                    category: post.category,
+                    createdOn: post.createdOn,
+                    score: post.upvotes - post.downvotes,
+                    commentCount: post.comment,
+                    theyHaveCount: post.theyHave,
+                    canMakeCount: post.canMake
+                });
+            },
+            error: function(error) {
+                console.log('error getting post');
+                console.log(error);
+            }
+        });
+    },
+
     createComment: function(comment) {
         var self = this;
 
@@ -80,9 +94,73 @@ var SinglePost = React.createClass( {
                 console.log('created comment');
                 console.log(JSON.stringify(newComment, null, 4));
                 self.getPostComments();
+                self.updatePostData();
             },
             error: function(error) {
                 console.log('error creating comment');
+                console.log(error);
+            }
+        });
+    },
+
+    toggleUpvote: function(e) {
+
+        console.log("up!");
+        if(!this.state.upvoted) {
+            this.setState({
+                upvoted: true,
+                downvoted: false
+            });
+        }
+        else {
+            this.setState({
+                upvoted: false,
+                downvoted: false
+            });
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/posts/'+this.props.postId+'/vote',
+            data: {
+                typeOfVote: 'upvote'
+            },
+            success: function(response) {
+                console.log(JSON.stringify(response));
+                console.log('upvote');
+            },
+            error: function(error) {
+                console.log('error upvoting');
+                console.log(error);
+            }
+        });
+    },
+
+    toggleDownvote: function() {
+        console.log("down");
+        if(!this.state.downvoted) {
+            this.setState({
+                upvoted: false,
+                downvoted: true
+            });
+        }
+        else {
+            this.setState({
+                upvoted: false,
+                downvoted: false
+            });
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/posts/'+this.props.postId+'/vote',
+            data: {
+                typeOfVote: 'downvote'
+            },
+            success: function(response) {
+                console.log(JSON.stringify(response));
+                console.log('downvote');
+            },
+            error: function(error) {
+                console.log('error downvoting');
                 console.log(error);
             }
         });
@@ -99,6 +177,8 @@ var SinglePost = React.createClass( {
             votesClass += ' downvoted';
             currentScore--;
         }
+
+
         var commentClass = 'comments';
         var theyHaveClass = 'they-have';
         var canMakeClass = 'can-make';
@@ -117,9 +197,9 @@ var SinglePost = React.createClass( {
                     <h1><div className="give-me-padding">{this.state.idea}</div></h1>
 
                     <div className={votesClass}>
-                        <div className='upvote'></div>
+                        <div className='upvote' onClick = {this.toggleUpvote}></div>
                         <div className='score'>{currentScore}</div>
-                        <div className='downvote'></div>
+                        <div className='downvote' onClick = {this.toggleDownvote}></div>
                     </div>
                 </div>
 
@@ -129,13 +209,13 @@ var SinglePost = React.createClass( {
                     <div className="desc-footer">
                         <div className="username-wrapper-single">raphael</div>
                         <div className='comment-icons'>
-                            <span className="comment-count-single">3</span>
+                            <span className="comment-count-single">{this.state.commentCount}</span>
                             &nbsp;<div onClick={this.selectCommentType} className={commentClass}></div>
                             &nbsp;&nbsp;&nbsp;&nbsp;
-                            <span className="comment-count-single">3</span>
+                            <span className="comment-count-single">{this.state.theyHaveCount}</span>
                             &nbsp;<div onClick={this.selectTheyHaveType} className={theyHaveClass}></div>
                             &nbsp;&nbsp;&nbsp;&nbsp;
-                            <span className="comment-count-single">3</span>
+                            <span className="comment-count-single">{this.state.canMakeCount}</span>
                             &nbsp;<div onClick={this.selectCanMakeType} className={canMakeClass}></div>
                         </div>
                         <div className="category-wrapper-single">{this.state.category}</div>
@@ -188,9 +268,17 @@ var CommentForm = React.createClass({
                 <input type='text' name='href' value={this.state.href} onChange={this.handleHrefChange} />
             ];
         }
+
+        var commentHeader = 'Comment';
+        if(this.props.type === 'theyHave') {
+            commentHeader = '"They have this!"';
+        }
+        else if(this.props.type === 'canMake') {
+            commentHeader = '"I can make this!"';
+        }
         return (
             <form className='comment-form' onSubmit={this.handleFormSubmit}>
-                <h3>New Comment</h3>
+                <h3>{commentHeader}</h3>
                 <label htmlFor='text'>Body</label>
                 <textarea name='text' value={this.state.text} onChange={this.handleTextChange} rows='4'></textarea>
                 {href}
