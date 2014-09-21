@@ -27,8 +27,9 @@ var PostList = React.createClass( {
 
     render: function() {
         var posts = [];
+        var self = this;
         this.state.posts.forEach(function(post) {
-            posts.push(<PostListItem postId={post._id} title={post.idea} score={post.upvotes-post.downvotes} />);
+            posts.push(<PostListItem postId={post._id} title={post.idea} score={post.upvotes-post.downvotes} userId={self.props.userId} />);
         });
         return (
             <div className = "postlist">
@@ -39,6 +40,34 @@ var PostList = React.createClass( {
 });
 
 var PostListItem = React.createClass({
+    componentWillMount: function() {
+        if(!this.props.userId) return;
+        var self = this;
+
+        $.ajax({
+            type: 'GET',
+            url: '/posts/'+this.props.postId+'/vote/'+this.props.userId,
+            success: function(vote) {
+                if(vote.typeOfVote === 'upvote') {
+                    self.setState({
+                        upvoted: true,
+                        downvoted: false
+                    });
+                }
+                else if(vote.typeOfVote === 'downvote') {
+                    self.setState({
+                        upvoted: false,
+                        downvoted: true
+                    });
+                }
+            },
+            error: function(error) {
+                console.log('error getting posts');
+                console.log(error);
+            }
+        });
+    },
+
     getInitialState: function() {
         return {
             upvoted: false,
@@ -135,6 +164,6 @@ var PostListItem = React.createClass({
 });
 
 React.renderComponent(
-    <PostList />,
+    <PostList userId={currentUserId} />,
     document.getElementById('post-list')
 );

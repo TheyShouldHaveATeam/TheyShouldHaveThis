@@ -472,6 +472,19 @@ MongoClient.connect((process.env.MONGOLAB_URI
         }
     });
 
+    app.get('/posts/:postId/vote/:userId', function(req, res) {
+        var postId = new ObjectID(req.params.postId);
+        var userId = new ObjectID(req.params.userId);
+        dbVote.getUserVoteOnPost(db, postId, userId, function(result) {
+            if(!result.success) {
+                res.json(result, 400);
+                return;
+            }
+
+            res.json(result, 200);
+        });
+    });
+
     app.post('/comments/:id/vote', function(req, res) {
         if(req.session.currentUser) {
             var userId = new ObjectID(req.session.currentUser);
