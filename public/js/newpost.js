@@ -14,7 +14,6 @@ var NewPost = React.createClass({
         var self = this;
 
         // TODO check values before sending
-        console.log(JSON.stringify(post,null,4));
         $.ajax({
             type: 'POST',
             url: '/posts',
@@ -24,8 +23,6 @@ var NewPost = React.createClass({
                 category: post.category
             },
             success: function(newPost) {
-                console.log('created post');
-                console.log(JSON.stringify(newPost, null, 4));
                 self.closeNewPostModal();
                 document.location = '/posts/' + newPost._id;
             },
@@ -54,7 +51,6 @@ var NewPost = React.createClass({
     },
 
     handleInlineFormSubmit: function(e) {
-        console.log(this.state.title);
         e.preventDefault();
         this.openNewPostModal();
     },
@@ -65,7 +61,6 @@ var NewPost = React.createClass({
             authenticate();
         }
         else {
-            console.log('new post');
             this.createPost({
                 title: this.state.title,
                 description: this.state.description,

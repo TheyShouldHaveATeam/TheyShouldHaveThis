@@ -34,7 +34,7 @@ var PostList = React.createClass( {
                 postId={post._id}
                 title={post.idea}
                 score={post.upvotes-post.downvotes}
-                userId={self.props.userId}
+                userId={post.userId}
                 desc={post.desc}
                 category={post.category}
                 commentCount={post.comment}
@@ -78,6 +78,18 @@ var PostListItem = React.createClass({
                 console.log(error);
             }
         });
+
+        $.ajax({
+            type: 'GET',
+            url: '/users/'+this.props.userId+'.json',
+            success: function(user) {
+                self.setState({username:user.username});
+            },
+            error: function(error) {
+                console.log('error getting username');
+                console.log(error);
+            }
+        });
     },
 
     getInitialState: function() {
@@ -88,67 +100,72 @@ var PostListItem = React.createClass({
     },
 
     toggleUpvote: function(e) {
-        if(!this.state.upvoted) {
-            this.setState({
-                upvoted: true,
-                downvoted: false
-            });
+        if(!loggedIn) {
+            authenticate();
         }
         else {
-            this.setState({
-                upvoted: false,
-                downvoted: false
+            if(!this.state.upvoted) {
+                this.setState({
+                    upvoted: true,
+                    downvoted: false
+                });
+            }
+            else {
+                this.setState({
+                    upvoted: false,
+                    downvoted: false
+                });
+            }
+            $.ajax({
+                type: 'POST',
+                url: '/posts/'+this.props.postId+'/vote',
+                data: {
+                    typeOfVote: 'upvote'
+                },
+                success: function(response) {
+                },
+                error: function(error) {
+                    console.log('error upvoting');
+                    console.log(error);
+                }
             });
         }
-        $.ajax({
-            type: 'POST',
-            url: '/posts/'+this.props.postId+'/vote',
-            data: {
-                typeOfVote: 'upvote'
-            },
-            success: function(response) {
-                console.log(JSON.stringify(response));
-                console.log('upvote');
-            },
-            error: function(error) {
-                console.log('error upvoting');
-                console.log(error);
-            }
-        });
     },
 
     toggleDownvote: function() {
-        if(!this.state.downvoted) {
-            this.setState({
-                upvoted: false,
-                downvoted: true
-            });
+        if(!loggedIn) {
+            authenticate();
         }
         else {
-            this.setState({
-                upvoted: false,
-                downvoted: false
+            if(!this.state.downvoted) {
+                this.setState({
+                    upvoted: false,
+                    downvoted: true
+                });
+            }
+            else {
+                this.setState({
+                    upvoted: false,
+                    downvoted: false
+                });
+            }
+            $.ajax({
+                type: 'POST',
+                url: '/posts/'+this.props.postId+'/vote',
+                data: {
+                    typeOfVote: 'downvote'
+                },
+                success: function(response) {
+                },
+                error: function(error) {
+                    console.log('error downvoting');
+                    console.log(error);
+                }
             });
         }
-        $.ajax({
-            type: 'POST',
-            url: '/posts/'+this.props.postId+'/vote',
-            data: {
-                typeOfVote: 'downvote'
-            },
-            success: function(response) {
-                console.log(JSON.stringify(response));
-                console.log('downvote');
-            },
-            error: function(error) {
-                console.log('error downvoting');
-                console.log(error);
-            }
-        });
     },
 
     render: function() {
-        console.log(JSON.stringify(this.props));
         var currentScore = this.props.score;
         var votesClass = 'votes';
         if(this.state.upvoted) {
@@ -172,9 +189,7 @@ var PostListItem = React.createClass({
                         <a href={"/posts/"+this.props.postId}>
                             <h2>{this.props.title}</h2>
                             <span className="idea-desc">{this.props.desc}</span>
-                            <div className="username-wrapper">
-                                raphael
-                            </div>
+                            <div className="username-wrapper">{this.state.username}</div>
                             <div className="icons-wrapper">
                                 <span className="comment-count">{this.props.commentCount}</span>
                                 &nbsp;<img className="little-icon comm" src="/images/comment_colored.png"/>

@@ -21,8 +21,6 @@ var SinglePost = React.createClass( {
     },
 
     componentWillMount: function() {
-        var self = this;
-
         this.updatePostData();
         this.getPostComments();
     },
@@ -59,7 +57,6 @@ var SinglePost = React.createClass( {
             type: 'GET',
             url: '/posts/'+this.props.postId+'.json',
             success: function(post) {
-                console.log(post);
                 self.setState({
                     idea: post.idea,
                     desc: post.desc,
@@ -69,6 +66,18 @@ var SinglePost = React.createClass( {
                     commentCount: post.comment,
                     theyHaveCount: post.theyHave,
                     canMakeCount: post.canMake
+                });
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/users/'+post.userId+'.json',
+                    success: function(user) {
+                        self.setState({username:user.username});
+                    },
+                    error: function(error) {
+                        console.log('error getting username');
+                        console.log(error);
+                    }
                 });
             },
             error: function(error) {
@@ -81,7 +90,6 @@ var SinglePost = React.createClass( {
     createComment: function(comment) {
         var self = this;
 
-        console.log(JSON.stringify(comment,null,4));
         $.ajax({
             type: 'POST',
             url: '/posts/'+this.props.postId+'/comments',
@@ -91,8 +99,6 @@ var SinglePost = React.createClass( {
                 type: comment.type
             },
             success: function(newComment) {
-                console.log('created comment');
-                console.log(JSON.stringify(newComment, null, 4));
                 self.getPostComments();
                 self.updatePostData();
             },
@@ -104,66 +110,69 @@ var SinglePost = React.createClass( {
     },
 
     toggleUpvote: function(e) {
-
-        console.log("up!");
-        if(!this.state.upvoted) {
-            this.setState({
-                upvoted: true,
-                downvoted: false
-            });
+        if(!loggedIn) {
+            authenticate();
         }
         else {
-            this.setState({
-                upvoted: false,
-                downvoted: false
+            if(!this.state.upvoted) {
+                this.setState({
+                    upvoted: true,
+                    downvoted: false
+                });
+            }
+            else {
+                this.setState({
+                    upvoted: false,
+                    downvoted: false
+                });
+            }
+            $.ajax({
+                type: 'POST',
+                url: '/posts/'+this.props.postId+'/vote',
+                data: {
+                    typeOfVote: 'upvote'
+                },
+                success: function(response) {
+                },
+                error: function(error) {
+                    console.log('error upvoting');
+                    console.log(error);
+                }
             });
         }
-        $.ajax({
-            type: 'POST',
-            url: '/posts/'+this.props.postId+'/vote',
-            data: {
-                typeOfVote: 'upvote'
-            },
-            success: function(response) {
-                console.log(JSON.stringify(response));
-                console.log('upvote');
-            },
-            error: function(error) {
-                console.log('error upvoting');
-                console.log(error);
-            }
-        });
     },
 
     toggleDownvote: function() {
-        console.log("down");
-        if(!this.state.downvoted) {
-            this.setState({
-                upvoted: false,
-                downvoted: true
-            });
+        if(!loggedIn) {
+            authenticate();
         }
         else {
-            this.setState({
-                upvoted: false,
-                downvoted: false
+            if(!this.state.downvoted) {
+                this.setState({
+                    upvoted: false,
+                    downvoted: true
+                });
+            }
+            else {
+                this.setState({
+                    upvoted: false,
+                    downvoted: false
+                });
+            }
+            $.ajax({
+                type: 'POST',
+                url: '/posts/'+this.props.postId+'/vote',
+                data: {
+                    typeOfVote: 'downvote'
+                },
+                success: function(response) {
+                },
+                error: function(error) {
+                    console.log('error downvoting');
+                    console.log(error);
+                }
             });
         }
-        $.ajax({
-            type: 'POST',
-            url: '/posts/'+this.props.postId+'/vote',
-            data: {
-                typeOfVote: 'downvote'
-            },
-            success: function(response) {
-                console.log(JSON.stringify(response));
-                console.log('downvote');
-            },
-            error: function(error) {
-                console.log('error downvoting');
-                console.log(error);
-            }
-        });
     },
 
     render: function() {
@@ -205,19 +214,20 @@ var SinglePost = React.createClass( {
 
                 <div className='desc-panel'>
                     <span className="make-me-black"><p>{this.state.desc}</p></span>
-                    <br/>
 
                     <div className="desc-footer">
+                        <div className="username-wrapper-single">{this.state.username}</div>
                         <div className='comment-icons'>
                             <span className="comment-count-single">{this.state.commentCount}</span>
                             &nbsp;<div onClick={this.selectCommentType} className={commentClass}></div>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;
                             <span className="comment-count-single">{this.state.theyHaveCount}</span>
                             &nbsp;<div onClick={this.selectTheyHaveType} className={theyHaveClass}></div>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;
                             <span className="comment-count-single">{this.state.canMakeCount}</span>
                             &nbsp;<div onClick={this.selectCanMakeType} className={canMakeClass}></div>
                         </div>
+                        <div className="category-wrapper-single">{this.state.category}</div>
                     </div>
                 </div>
 
@@ -250,7 +260,6 @@ var CommentForm = React.createClass({
             authenticate();
         }
         else {
-            console.log('comment');
             this.props.createComment({
                 text: this.state.text,
                 href: this.state.href,
@@ -263,7 +272,7 @@ var CommentForm = React.createClass({
         var href = [];
         if(this.props.type !== 'comment') {
             href = [
-                <label htmlFor='href'>Link</label>,
+                <label htmlFor='href'>Attached Link</label>,
                 <input type='text' name='href' value={this.state.href} onChange={this.handleHrefChange} />
             ];
         }
@@ -295,7 +304,10 @@ var CommentList = React.createClass( {
         this.props.comments.forEach(function(comment) {
             if(comment.type === self.props.type) {
 
-                comments.push(<CommentListItem text={comment.text} href={comment.href} />);
+                comments.push(<CommentListItem
+                    text={comment.text}
+                    href={comment.href}
+                    type={comment.type} />);
             }
         });
         return (
@@ -310,11 +322,30 @@ var CommentList = React.createClass( {
 var CommentListItem = React.createClass({
 
     render: function() {
-        var href = 'http://'+this.props.href;
+
+        if(this.props.href) {
+            var href = 'http://'+this.props.href;
+            hrefTwo =
+                <div className="link-wrapper-comment">
+                    <a href={href}>Attached Link</a>
+                </div>
+                ;
+        }
+        commentClasses = "comment-list-item " + this.props.type;
         return (
-            <div className='comment-list-item'>
-                <p>{this.props.text}</p>
-                <a href={href}>Link</a>
+            <div className={commentClasses}>
+                <div className="comment-entire">
+                    <div className="comment-text">
+                        {this.props.text}
+                    </div>
+
+                    <div className="comment-footer">
+                        <div className="username-wrapper-comment">
+                            raphael
+                        </div>
+                        {hrefTwo}
+                    </div>
+                </div>
             </div>
         );
 
