@@ -72,10 +72,12 @@ var NewPost = React.createClass({
     render: function() {
         return(
             <div className='new-post'>
-                <h1>TheyShouldHave&nbsp;
-                    <form onSubmit={this.handleInlineFormSubmit}>
+                <h1>
+                <img id="main-logo" src="/images/logo_colored.png"/>&nbsp;
+                <span id="main-title">TheyShouldHave</span>
+                    <form id="post-idea" onSubmit={this.handleInlineFormSubmit}>
                         <input id='main-input' type='text' placeholder='This' value={this.state.title} onChange={this.handleTitleChange} />
-                        <input type='submit' />
+                        <input id="submit-button-post-idea" type='submit' value=">" />
                     </form>
                 </h1>
                 <div id='new-post-modal-backdrop' onClick={this.closeNewPostModal}></div>
