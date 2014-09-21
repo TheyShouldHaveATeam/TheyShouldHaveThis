@@ -51,7 +51,7 @@ var SinglePost = React.createClass( {
         return (
             <div>
                 <div className='single-post'>
-                    <h1>{this.state.idea}</h1>
+                    <h1><div className="give-me-padding">{this.state.idea}</div></h1>
 
                     <div className={votesClass}>
                         <div className='upvote'></div>

@@ -92,11 +92,7 @@ form textarea {
   border-style: solid;
   border-width: 2px;
   border-radius: 8px;
-<<<<<<< HEAD
   color: #fff;
-=======
-  margin-bottom: 0px;
->>>>>>> d92eddf172bf341da4e5c513c243e05aedd8eda8
 }
 .single-post {
   padding-top: 5px;
@@ -149,6 +145,12 @@ form textarea {
   border-style: solid;
   border-width: 1px 2px 2px 2px;
   border-radius: 0px 0px 8px 8px;
+}
+.give-me-padding {
+  padding: 7px;
+  height: 20px;
+  margin-bottom: 0;
+  margin-left: 15px;
 }
 #logo-auth-modal {
   text-align: center;
