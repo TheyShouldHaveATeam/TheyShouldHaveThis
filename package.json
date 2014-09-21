@@ -10,6 +10,7 @@
     "jade": "*",
     "mongodb": "*",
     "bcrypt-nodejs": "*",
-    "stylus": "*"
+    "stylus": "*",
+    "connect-mongo": "*"
   }
 }

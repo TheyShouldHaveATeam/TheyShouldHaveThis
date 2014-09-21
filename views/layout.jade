@@ -9,5 +9,7 @@ head
 body
     div#current-user=currentUser
     script(type='text/javascript').
+        var authenticate;
+        var loggedIn = false;
         var currentUserId = $('#current-user').html();
     block content

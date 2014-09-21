@@ -157,12 +157,17 @@ var CommentForm = React.createClass({
 
     handleFormSubmit: function(e) {
         e.preventDefault();
-        console.log('comment');
-        this.props.createComment({
-            text: this.state.text,
-            href: this.state.href,
-            type: this.props.type
-        });
+        if(!loggedIn) {
+            authenticate();
+        }
+        else {
+            console.log('comment');
+            this.props.createComment({
+                text: this.state.text,
+                href: this.state.href,
+                type: this.props.type
+            });
+        }
     },
 
     render: function() {

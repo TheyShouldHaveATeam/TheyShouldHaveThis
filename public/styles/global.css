@@ -74,6 +74,12 @@ form textarea {
   bottom: 0;
   display: none;
 }
+#auth-modal {
+  z-index: 3;
+}
+#auth-modal-backdrop {
+  z-index: 2;
+}
 #current-user,
 #current-post {
   display: none;

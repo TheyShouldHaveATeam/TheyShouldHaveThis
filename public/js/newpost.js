@@ -61,12 +61,17 @@ var NewPost = React.createClass({
 
     handleFormSubmit: function(e) {
         e.preventDefault();
-        console.log('new post');
-        this.createPost({
-            title: this.state.title,
-            description: this.state.description,
-            category: this.state.category
-        });
+        if(!loggedIn) {
+            authenticate();
+        }
+        else {
+            console.log('new post');
+            this.createPost({
+                title: this.state.title,
+                description: this.state.description,
+                category: this.state.category
+            });
+        }
     },
 
     render: function() {
