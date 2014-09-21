@@ -125,6 +125,7 @@ form input, form textarea
     border-width: 1px 2px 2px 2px;
     border-radius: 0px 0px 8px 8px;
     border-color: white grey grey;
+    position relative
 
 .give-me-padding
     padding 7px
@@ -198,21 +199,36 @@ a
     text-decoration none
     color black
 .comment-icons
+    display inline-block
+    background-color rgb(220, 220, 220)
+    border-radius 5px 5px 0px 0px
+    padding 8px
+    margin-left auto
+    margin-right auto
+
     div
-        width 50px
-        height 50px
+        height 30px
         background-size contain
         background-repeat no-repeat
     .comments
         background-image url('/images/comment_bw.png')
+        width 30px
+        display inline-block
+
         &.selected
             background-image url('/images/comment_colored.png')
     .they-have
         background-image url('/images/checkmark_bw.png')
+        width 30px
+        display inline-block
+
         &.selected
             background-image url('/images/checkmark_colored.png')
     .can-make
         background-image url('/images/exclamation_bw.png')
+        width 16px
+        display inline-block
+
         &.selected
             background-image url('/images/exclamation_colored.png')
 #logged-in-as
@@ -259,9 +275,8 @@ h2
     border-radius 4px 4px 0px 0px
     position absolute
     bottom 0
-    right 0
     z-index 1.5
-    margin-right 8px
+    margin-left 27%
     height 22px
     padding 5px
 .little-icon
@@ -277,19 +292,42 @@ h2
     color white
     -webkit-text-stroke-width: 1px;
     -webkit-text-stroke-color: black;
+.comment-count-single
+    display inline-block
+    font-family 'Grandstander'
+    font-size 22px
+    color white
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
+    vertical-align top
+    padding-top 5px
 .username-wrapper
     position absolute
     bottom 0
     z-index 1.5
     height 22px
-    padding 5px
+    padding-top 15px
     padding-left 0px
     font-family 'Grandstander'
-    font-size 17px
+    font-size 12px
     color white
-    -webkit-text-stroke-width: 1px;
-    -webkit-text-stroke-color: black;
 .make-me-black
     color black
 .make-me-white
     color white
+.category-wrapper
+    position absolute
+    bottom 0
+    right 0
+    z-index 1.5
+    height 22px
+    padding-top 15px
+    padding-left 0px
+    font-family 'Grandstander'
+    font-size 12px
+    color white
+    margin-right 10px
+.desc-footer
+    position relative
+    text-align center
+    width 100%

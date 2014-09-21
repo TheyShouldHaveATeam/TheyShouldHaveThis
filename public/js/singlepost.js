@@ -197,27 +197,33 @@ var SinglePost = React.createClass( {
             canMakeClass += ' selected';
         }
         return (
+            <div>
+                <div className='post-list-item single-post make-me-white'>
+                    <h1><div className="give-me-padding">{this.state.idea}</div></h1>
 
-            <div className='single-post make-me-white'>
-                <h1><div className="post-list-item give-me-padding">{this.state.idea}</div></h1>
-
-                <div className={votesClass}>
-                    <div className='upvote'></div>
-                    <div className='score'>{currentScore}</div>
-                    <div className='downvote'></div>
+                    <div className={votesClass}>
+                        <div className='upvote'></div>
+                        <div className='score'>{currentScore}</div>
+                        <div className='downvote'></div>
+                    </div>
                 </div>
-
-                <p>{this.state.desc}</p>
-
-                <div className='comment-icons'>
-                    <div onClick={this.selectCommentType} className={commentClass}></div>
-                    <div onClick={this.selectTheyHaveType} className={theyHaveClass}></div>
-                    <div onClick={this.selectCanMakeType} className={canMakeClass}></div>
-                </div>
-
 
                 <div className='desc-panel'>
                     <span className="make-me-black"><p>{this.state.desc}</p></span>
+                    <br/>
+
+                    <div className="desc-footer">
+                        <div className='comment-icons'>
+                            <span className="comment-count-single">3</span>
+                            &nbsp;<div onClick={this.selectCommentType} className={commentClass}></div>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <span className="comment-count-single">3</span>
+                            &nbsp;<div onClick={this.selectTheyHaveType} className={theyHaveClass}></div>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <span className="comment-count-single">3</span>
+                            &nbsp;<div onClick={this.selectCanMakeType} className={canMakeClass}></div>
+                        </div>
+                    </div>
                 </div>
 
                 <CommentList type={this.state.commentFeed} comments={this.state.comments} createComment={this.createComment} />

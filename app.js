@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser')
 var MongoClient = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectID;
 var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
 var stylus = require('stylus');
 
 var dbUser = require(__dirname + '/db/user.js');
@@ -21,8 +22,6 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 3600000 }}));
-
 app.listen(process.env.PORT || 3000);
 
 
@@ -31,6 +30,14 @@ MongoClient.connect((process.env.MONGOLAB_URI
     if(err) {
         throw err;
     }
+
+    app.use(session({
+        secret: 'keyboard cat',
+        cookie: { maxAge: 3600000 },
+        store: new MongoStore({
+            db: db,
+        })
+    }));
 
     app.get('/', function(req, res) {
         res.render('landing', {title: 'They Should Have This', currentUser: req.session.currentUser});
