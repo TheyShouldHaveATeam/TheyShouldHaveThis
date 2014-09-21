@@ -23,11 +23,9 @@ function createPost(db, userId, idea, desc, category, callback) {
         "createdOn": Date.now(),
         "upvotes": 0,
         "downvotes": 0,
-        "comments": {
-            "theyHave": 0,
-            "comment": 0,
-            "canMake": 0
-        }
+        "theyHave": 0,
+        "comment": 0,
+        "canMake": 0
     };
 
     db.collection('posts').insert(post, function(err, inserted) {

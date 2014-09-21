@@ -38,7 +38,7 @@ function createComment(db, userId, postId, text, type, href, callback) {
             return;
         }
 
-        var commentTypePath = "comments$" + type;
+        var commentTypePath = type;
         var toUpdate = { "$inc": { } };
         toUpdate["$inc"][commentTypePath] = 1;
 
