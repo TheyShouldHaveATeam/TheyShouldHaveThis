@@ -59,7 +59,6 @@ var SinglePost = React.createClass( {
             type: 'GET',
             url: '/posts/'+this.props.postId+'.json',
             success: function(post) {
-                console.log(post);
                 self.setState({
                     idea: post.idea,
                     desc: post.desc,
@@ -81,7 +80,6 @@ var SinglePost = React.createClass( {
     createComment: function(comment) {
         var self = this;
 
-        console.log(JSON.stringify(comment,null,4));
         $.ajax({
             type: 'POST',
             url: '/posts/'+this.props.postId+'/comments',
@@ -91,8 +89,6 @@ var SinglePost = React.createClass( {
                 type: comment.type
             },
             success: function(newComment) {
-                console.log('created comment');
-                console.log(JSON.stringify(newComment, null, 4));
                 self.getPostComments();
                 self.updatePostData();
             },
@@ -108,7 +104,6 @@ var SinglePost = React.createClass( {
             authenticate();
         }
         else {
-            console.log("up!");
             if(!this.state.upvoted) {
                 this.setState({
                     upvoted: true,
@@ -128,8 +123,6 @@ var SinglePost = React.createClass( {
                     typeOfVote: 'upvote'
                 },
                 success: function(response) {
-                    console.log(JSON.stringify(response));
-                    console.log('upvote');
                 },
                 error: function(error) {
                     console.log('error upvoting');
@@ -144,7 +137,6 @@ var SinglePost = React.createClass( {
             authenticate();
         }
         else {
-            console.log("down");
             if(!this.state.downvoted) {
                 this.setState({
                     upvoted: false,
@@ -164,8 +156,6 @@ var SinglePost = React.createClass( {
                     typeOfVote: 'downvote'
                 },
                 success: function(response) {
-                    console.log(JSON.stringify(response));
-                    console.log('downvote');
                 },
                 error: function(error) {
                     console.log('error downvoting');
@@ -260,7 +250,6 @@ var CommentForm = React.createClass({
             authenticate();
         }
         else {
-            console.log('comment');
             this.props.createComment({
                 text: this.state.text,
                 href: this.state.href,
