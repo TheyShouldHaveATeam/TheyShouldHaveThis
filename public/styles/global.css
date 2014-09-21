@@ -126,7 +126,6 @@ form textarea {
   width: 50px;
   height: 25px;
 }
-<<<<<<< HEAD
 #logo-auth-modal {
   text-align: center;
   font-family: 'Lato-Regular';
@@ -193,9 +192,8 @@ img#main-logo {
   width: 50px;
   display: inline-block;
   vertical-align: bottom;
-=======
+}
 a {
   text-decoration: none;
   color: #000;
->>>>>>> 8570380d28334e4134f867105b46ebf538cf1f84
 }
