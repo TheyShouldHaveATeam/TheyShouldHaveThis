@@ -55,7 +55,9 @@ form textarea {
 }
 #auth-modal,
 #new-post-modal {
-  height: 620px;
+  top: 50px;
+  bottom: 50px;
+  overflow: scroll;
   position: absolute;
   left: 200px;
   right: 200px;
