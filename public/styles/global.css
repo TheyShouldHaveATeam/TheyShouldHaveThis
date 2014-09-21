@@ -48,6 +48,7 @@ form textarea {
   padding: 10px;
   display: none;
   background-color: #fff;
+  z-index: 1;
 }
 #auth-modal-backdrop,
 #new-post-modal-backdrop {
@@ -73,6 +74,7 @@ form textarea {
   display: block;
   background-color: #008000;
   margin: 10px auto;
+  z-index: 0;
 }
 .votes {
   top: 20px;

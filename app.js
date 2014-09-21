@@ -289,7 +289,7 @@ MongoClient.connect((process.env.MONGOLAB_URI
         if(req.session.currentUser) {
             var userId = req.session.currentUser; //new ObjectID(req.session.currentUser);
 
-            if(!req.params.idea || !req.params.desc || !req.params.category) {
+            if(!req.body.idea || !req.body.desc || !req.body.category) {
                 res.send(403);
                 return;
             }
