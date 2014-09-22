@@ -285,7 +285,7 @@ var CommentForm = React.createClass({
         }
         else if(this.props.type === 'canMake') {
             commentHeader = '"I can make this!"';
-            placeHolder = "Hey! I'm pretty sure this doesn't exist, but I can make it happen. To get updates on my development, follow the link.";
+            placeHolder = "Hey! I'm pretty sure this doesn't exist, but fear not! I am working on it. Click the link to follow my development.";
         }
         return (
             <div>

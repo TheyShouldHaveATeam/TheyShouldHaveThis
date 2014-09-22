@@ -495,7 +495,9 @@ h2 {
 #comment-textarea {
   width: 447px;
   display: inline-block;
+  min-height: 85px;
 }
 #link-text-form {
   display: inline-block;
+  width: 100%;
 }
